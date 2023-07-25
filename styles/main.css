@@ -1,3 +1,7 @@
+@font-face {
+    font-family: drop-cap;
+    src: url(/styles/drop-cap/floral.ttf);
+}
 .toc-3 {
     margin-left: 2rem;
 }
@@ -18,4 +22,16 @@ span.marginnote#toc {
     float: left;
     margin-right: unset;
     margin-left: -60%
+}
+
+article#content > h2:first-of-type + p{
+}
+
+article#content > h2:first-of-type + p::first-letter {
+    color: #903;
+    font-family: drop-cap;
+    float: left;
+    font-size: 75px;
+    line-height: 60px;
+    padding: 4px 8px 0 3px;
 }

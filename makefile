@@ -16,7 +16,7 @@ build: install setup
 
 .PHONE: clean
 clean:
-	@rm -rf dist/ temp/ site/styles/*
+	@rm -rf dist/ temp/ site/styles/*.css site/styles/et-book/
 
 .PHONY: serve
 serve:
