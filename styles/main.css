@@ -1,0 +1,21 @@
+.toc-3 {
+    margin-left: 2rem;
+}
+
+.toc-4 {
+    margin-left: 4rem;
+}
+
+article#content {
+    max-width: 669px;
+}
+
+label.sidenote-number {
+    display: inline !important;
+}
+
+span.marginnote#toc {
+    float: left;
+    margin-right: unset;
+    margin-left: -60%
+}
