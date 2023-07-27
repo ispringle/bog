@@ -2,5 +2,8 @@ dist/
 soupault
 node_modules/
 temp/
+
 site/styles/*.css
 site/styles/et-book/
+
+test/
