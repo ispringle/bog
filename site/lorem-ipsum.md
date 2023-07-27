@@ -1,31 +1,122 @@
-# xmark = Markdown + Tufte CSS
-## Antonio Vieiro
+# Lorem Ipsum
+
+## Ian S. Pringle
 
 ## A brief introduction
 
-[Markdown](https://daringfireball.net/projects/markdown/) is a plain text format for writing structured documents, based on formatting conventions from email and usenet.  It was developed in 2004 by John Gruber.
+[Bog](https://github.com/ispringle/bog) is a tool for creating my
+[website](https://ian.ist/) from Markdown files and some HTML. It turns the
+`.md` files into HTML that is compliant (mostly, minus my modifications) with
+tufte-css. In order to accamodate some features of of the tufte-css stylesheet,
+the Markdown syntax had to be added to and modified. Additionally, I dislike
+some things about Markdown and so I've modified it to meet my own needs and
+desires. This document enumerates the syntax of Bog, its conventions, and acts
+of a visual test bed to verify the syntax and features of Bog are working.
 
-[CommonMark](http://commonmark.org) is a proposal for a standard, **unambiguous syntax specification for Markdown**, along with a **suite of comprehensive tests** to validate Markdown implementations against this specification. It was created by a group of [Markdown fans](http://commonmark.org).
+[Markdown](https://daringfireball.net/projects/markdown/) is a plain text format
+for writing structured documents, based on formatting conventions from email and
+usenet.  It was developed in 2004 by John Gruber.
 
-[tufte-css](https://edwardtufte.github.io/tufte-css/) provides tools to style web articles using the ideas demonstrated by Edward Tufte's books and handouts. It was created by [Dave Liepmann](http://www.daveliepmann.com/) in late 2015 and is now an Edward Tufte project.
+[tufte-css](https://edwardtufte.github.io/tufte-css/) provides tools to style
+web articles using the ideas demonstrated by Edward Tufte's books and handouts.
+It was created by [Dave Liepmann](http://www.daveliepmann.com/) in late 2015 and
+is now an Edward Tufte project.
 
-[xmark](https://github.com/vieiro/xmark) is a simple XSLT stylesheet that transforms CommonMark compliant plain text documents ([see the source of this one here](https://raw.githubusercontent.com/vieiro/xmark/master/test.markdown)), with some additional conventions, into tufte-css styled web pages. 
+Bog has two main goals:
 
-This document enumerates the goals of xmark, its conventions and explains how to use it.
+### I: Generate tufte-css compliant web pages from Markdown
 
-## xmark goals
+The first goal of Bog is to generate tufte-css styled web pages from plain text
+files that follow the CommonMark specification.
 
-xmark has two main goals:
+### II: Generate a website that is beautiful and joyful
 
-### I: Generate tufte-css styled web pages
+The second goal of Bog is to generate a static website that is a joy to interact
+with and provides optional features that will not get in the way of browsing and
+can be entirely turned off (for example via noscript) without ruining the
+website's core functionalit.
 
-The first goal of xmark is to generate tufte-css styled web pages from plain text files that follow the CommonMark specification.
+## Markdown Syntax
 
-### II: Serve as an experimentation tool
+## The Basics
 
-The second goal of xmark is to serve as a tool to manipulate the XML structure generated with CommonMark's cmark parser. By modifying a simple XSLT one can generate all sort of structured documents out from plain CommonMark text files.
+## Bog-specific syntax
 
-## xmark conventions
+To support Tufte-CSS, there are a number of additional elements to a markdown
+file including citations, epigraphs with optional "footer", and I fixed a few
+grievances I have with markdown along the way.
+
+### Citations
+
+The HTML5 standard provides a `<cite>` element which signifies that the thing it contains is a citation. This is pretty handy to have access to I think, but there is no means of specifying a citation with Markdown. Because of this I have come up with a special citation syntax which consists of two dashes wrapping text. There is to be *no* spaces separating the dashes from text, otherwise the two dashes will be treated as an emdash ( -- ) instead:
+
+```
+--[Lorem Ipsum](https://www.lipsum.com/)-- has been the industry standard in dummy-text since the 1500s!
+```
+
+--[Lorem Ipsum](https://www.lipsum.com/)-- has been the industry standard in dummy-text since the 1500s!
+
+### Epigraphs
+
+Tufte made ample use of
+[epigraphs](https://en.wikipedia.org/wiki/Epigraph_(literature)) in his writings
+and the tufte-css stylesheet has a means of rendering them. To do so in Bog's
+modified markdown syntax we use two `>`. This is similar to how a blockquote is
+expressed in standard markdown.
+
+```markdown
+>> Laborum Lorem dolore minim deserunt dolor ullamco qui minim consequat in
+>> labore. _Pariatur deserunt_ et nostrud elit laboris voluptate. Aliquip
+>> excepteur fugiat ullamco *veniam veniam* aliqua cillum labore anim consectetur
+>> esse ullamco fugiat dolore.
+```
+
+>> Laborum Lorem dolore minim deserunt dolor ullamco qui minim consequat in
+>> labore. _Pariatur deserunt_ et nostrud elit laboris voluptate. Aliquip
+>> excepteur fugiat ullamco *veniam veniam* aliqua cillum labore anim consectetur
+>> esse ullamco fugiat dolore.
+
+A Tufte-style epigraph can also have a "footer" which is essentially a citation. To express that the line is the footer of the epigraph use three `>`:
+
+```markdown
+>> Laborum Lorem dolore minim deserunt dolor ullamco qui minim consequat in
+>> labore. _Pariatur deserunt_ et nostrud elit laboris voluptate. Aliquip
+>> excepteur fugiat ullamco *veniam veniam* aliqua cillum labore anim consectetur
+>> esse ullamco fugiat dolore.
+>>> -- Ullamco Sunt's --Incididunt Esse Sit--, 1023
+```
+
+>> Laborum Lorem dolore minim deserunt dolor ullamco qui minim consequat in
+>> labore. _Pariatur deserunt_ et nostrud elit laboris voluptate. Aliquip
+>> excepteur fugiat ullamco *veniam veniam* aliqua cillum labore anim consectetur
+>> esse ullamco fugiat dolore.
+>>> -- Ullamco Sunt's --Incididunt Esse Sit--, 1023
+
+### Side Notes & Margin Notes
+
+Tufte-CSS has a style of footnote it calls a "side note"[^fn:This is a footnote
+which appears in the margin rather than at the bottom of the document].  Like a
+side note, there is also a "margin note"[^aside:A margin note represents some aside
+that is only accilary to the discourse] which is a note without a reference
+number.  On narrow screens where the margin is not wide enough or is not present
+these notes instead can be toggled and will appear below the reference.
+
+A note[^aside:By "note" I mean both side notes and margin notes] has the format of:
+
+```markdown
+[^kind:note content]
+```
+
+The "kind" for the note determines two things; whether a note is a side note or a margin note and the id used for the note. By convention a side note uses the kind "fn"[^note:However any "kind" other than "aside" can be used to mark a side note, this way side notes can have unique URLs.]. A margin note *must* have the kind "aside"[^aside:The GithubSlugger package ensures that all id's are unique even if they are the same word.].
+
+Like footnotes, a side note uses a number to match the note to the place it's
+referenced[^aside:The way that tufte-css works, these numbers are actually computed with CSS!]. Margin notes do not use numbers but instead use a list of symbols.
+Once all the symbols have been used up they'll loop back to the first symbol
+again[^aside:The symbols that are used are "⁜", "†", and "‡"].
+
+## Tufte-CSS conventions
+
+## Bog conventions
 
 Nor Markdown nor CommonMark support document metadata so, for instance, there is no standard way to specify a title in a CommonMark document. It is not possible either to mark a paragraph as an epigraph, or as a figure caption, or as a margin note. 
 
@@ -159,7 +250,7 @@ page 92.](tufte-css/img/exports-imports.png
 
 Will be transformed in the following ```<figure>```, ```<img>``` and ```<caption>```:
 
-![From Edward Tufte, *Visual Display of Quantitative Information*, page 92.](tufte-css/img/exports-imports.png "Visual Display of Quantitative Information")
+![From Edward Tufte, *Visual Display of Quantitative Information*, page 92.](https://raw.githubusercontent.com/edwardtufte/tufte-css/a2953c038d86dae89aad9ced814bc685cee0ae91/img/exports-imports.png "Visual Display of Quantitative Information")
 
 Note that figures are automatically numbered by xmark.
 
@@ -167,7 +258,7 @@ Note that figures are automatically numbered by xmark.
 
 Graphics that are ancillary to the main body of the text are placed in margin figures in tufte-css. 
 
-But CommonMark and Markdown have just a single construct for images.  ![F.J. Cole, “The History of Albrecht Dürer’s Rhinoceros in Zooological Literature,” *Science, Medicine, and History: Essays on the Evolution of Scientific Thought and Medical Practice (London, 1953)*, ed. E. Ashworth Underwood, 337-356. From page 71 of Edward Tufte’s *Visual Explanations*.](tufte-css/img/rhino.png "margin Rhino image") 
+But CommonMark and Markdown have just a single construct for images.  ![F.J. Cole, “The History of Albrecht Dürer’s Rhinoceros in Zooological Literature,” *Science, Medicine, and History: Essays on the Evolution of Scientific Thought and Medical Practice (London, 1953)*, ed. E. Ashworth Underwood, 337-356. From page 71 of Edward Tufte’s *Visual Explanations*.](https://raw.githubusercontent.com/edwardtufte/tufte-css/a2953c038d86dae89aad9ced814bc685cee0ae91/img/rhino.png "margin Rhino image") 
 
 How could xmark support margin figures easily? By abusing the construct, of course. 
 
@@ -197,7 +288,7 @@ From *Beautiful Evidence*, page
 
 Will be rendered as:
 
-![Edward Tufte’s English translation of the Napoleon’s March data visualization. From *Beautiful Evidence*, page 122-124.](tufte-css/img/napoleons-march.png "fullwidth Napoleon's march").
+![Edward Tufte’s English translation of the Napoleon’s March data visualization. From *Beautiful Evidence*, page 122-124.](https://raw.githubusercontent.com/edwardtufte/tufte-css/a2953c038d86dae89aad9ced814bc685cee0ae91/img/napoleons-march.png "fullwidth Napoleon's march").
 
 Note that the ```margin``` and ```fullwidth``` special words are removed from the resulting HTML figure title. As in Tufte-CSS, full-width images are also numbered automaticcally with xmark.
 

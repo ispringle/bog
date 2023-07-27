@@ -2,6 +2,23 @@
     font-family: drop-cap;
     src: url(/styles/drop-cap/floral.ttf);
 }
+
+*, html, body, a, button {
+    cursor: url(/styles/manicule-man.png) 114 48, auto;
+}
+
+body {
+    background-image : url(http://api.thumbr.it/whitenoise-361x370.png?background=ffffffff&noise=5c5c5c&density=13&opacity=62) !important;
+}
+
+.main-overlay {
+position: fixed;
+pointer-events: none;
+content: "";
+inset: 0;
+z-index: 1;
+}
+
 .toc-3 {
     margin-left: 2rem;
 }
@@ -18,13 +35,23 @@ label.sidenote-number {
     display: inline !important;
 }
 
-span.marginnote#toc {
+span.marginnote#toc-content {
     float: left;
     margin-right: unset;
     margin-left: -60%
 }
 
-article#content > h2:first-of-type + p{
+span.marginnote ul {
+    font-size: unset;
+    line-height: unset;
+}
+
+#toc-content ul {
+    list-style-type: none;
+}
+
+article#content > h2:first-of-type + p::first-line {
+    font-variant-caps: small-caps;
 }
 
 article#content > h2:first-of-type + p::first-letter {
@@ -34,4 +61,65 @@ article#content > h2:first-of-type + p::first-letter {
     font-size: 75px;
     line-height: 60px;
     padding: 4px 8px 0 3px;
+}
+
+article > nav {
+    position: sticky;
+    top: 2rem;
+    margin-top: 1.4rem;
+    margin-bottom: 1.4rem;
+    padding-right: 0;
+    vertical-align: baseline;
+    font-size: 1.4rem;
+    line-height: 2rem;
+}
+
+label.marginnote-symbol {
+    display: inline !important;
+    font-size: 1rem;
+    top: -.5rem;
+    left: -0.3rem;
+    position: relative;
+}
+
+label.sidenote-number {
+    margin-right: -0.5rem;
+}
+
+label.sidenote-toggle > a {
+    text-decoration: none;
+}
+
+label.sidenote-number > a {
+    display: inline-block;
+    width: 0.5rem;
+    height: 1rem;
+}
+
+label.sidenote-number::after {
+    pointer-events: none;
+    left: -0.8rem;
+
+}
+
+label.sidenote-number::after, label.marginnote-symbol {
+    margin-right: -0.3rem;
+}
+
+span.marginnote::before {
+    content: attr(data-symbol);
+    font-size: 1rem;
+    top: -.5rem;
+    margin-right: 0.2rem;
+    position: relative;
+}
+
+@media (max-width: 760px) {
+    article > nav {
+        position: unset;
+    }
+    span.marginnote#toc {
+        float: unset;
+        margin: 1rem 2.5%;
+    }
 }

@@ -5,7 +5,7 @@
   build_dir = "dist/"
   site_dir = "site/"
   default_template_file = "templates/base.html"
-  default_content_selector = "main"
+  default_content_selector = "article#content"
   default_content_action = "append_child"
   index_page = "index"
   page_file_extensions = ["html", "md"]
@@ -24,7 +24,7 @@
   site_logo = "https://ian.ist/favicon.svg"
 
 [preprocessors]
-  md = 'scripts/markdown.sh'
+  md = 'scripts/markdown.mjs'
 
 [index]
   index = true
@@ -147,3 +147,21 @@
   page = "blog/index.md"
   feed_file = "atom.xml"
   use_section = "blog"
+
+[widgets.table-of-contents]
+  #exclude_path_regex = '/index(.*)'
+  widget = "toc"
+  selector = "#toc-content"
+  action = "replace_content"
+  min_level = 2
+  toc_list_class = "toc"
+  toc_class_levels = true
+  valid_html = true
+  numbered_list = false
+  heading_links = false
+  use_heading_slug = true
+
+[widgets.conditional-remove-toc-wrapper]
+  widget = "delete-if"
+  target_selector = "nav#toc"
+  check_selector = "#toc-content"

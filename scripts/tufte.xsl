@@ -22,18 +22,18 @@ XSLT Stylesheet to generate tufte-css styled web pages from CommonMark documents
                                         <p class='subtitle'><xsl:value-of select='$subtitle/cm:text/text()'/></p>
                                         <!-- Include TOC or not as a margin note -->
                                         <xsl:if test='not($generate.toc = "no")'>
-                                                <p>
+                                                <nav>
                                                         <label for='toc' class='margin-toggle'>⊕ Table of Contents</label>
                                                         <xsl:element name='input'>
                                                                 <xsl:attribute name='id'>toc</xsl:attribute>
                                                                 <xsl:attribute name='type'>checkbox</xsl:attribute>
                                                                 <xsl:attribute name='class'>margin-toggle</xsl:attribute>
                                                         </xsl:element>
-                                                        <span class='marginnote' id='toc'>
+                                                        <span class='marginnote' id='toc-content'>
                                                                 <strong>Table of Contents</strong><br />
                                                                 <xsl:apply-templates select="//cm:heading" mode="toc"/>
                                                         </span>
-                                                </p>
+                                                </nav>
                                         </xsl:if>
                                         <xsl:apply-templates/>
                                 </article>
