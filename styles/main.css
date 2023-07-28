@@ -3,12 +3,19 @@
     src: url(/styles/drop-cap/floral.ttf);
 }
 
-*, html, body, a, button {
-    cursor: url(/styles/manicule-man.png) 114 48, auto;
+* {
+    cursor: url('/styles/manicules/manicule-default-right.png') 113 46,
+    url('/styles/manicules/manicule-default-left.png') 0 46,
+    url('/styles/manicules/manicule-alt-left-up.png') 0 0,
+    url('/styles/manicules/manicule-alt-right-up.png') 81 0,
+    url('/styles/manicules/manicule-alt-left-down.png') 0 126,
+    url('/styles/manicules/manicule-alt-right-down.png') 81 126,
+    auto;
 }
 
 body {
-    background-image : url(http://api.thumbr.it/whitenoise-361x370.png?background=ffffffff&noise=5c5c5c&density=13&opacity=62) !important;
+    background-image : url(/styles/background.png);
+    font-family: 'IM Fell English';
 }
 
 .main-overlay {
@@ -51,7 +58,7 @@ span.marginnote ul {
 }
 
 article#content > h2:first-of-type + p::first-line {
-    font-variant-caps: small-caps;
+    font-family: 'IM Fell English SC';
 }
 
 article#content > h2:first-of-type + p::first-letter {

@@ -7,3 +7,6 @@ site/styles/*.css
 site/styles/et-book/
 
 test/
+styles/main.css
+
+.DS_Store
