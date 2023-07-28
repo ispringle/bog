@@ -46,8 +46,8 @@ To these ends, and others, I have decided to create Bog. Bog is the next iterati
   - [X] Citations
   - [X] Document Title convention
   - [X] Document Subtitle convention
-  - [ ] Sidenotes
-  - [ ] Margin notes
+  - [X] Sidenotes
+  - [X] Margin notes
   - [ ] Figure convention
   - [ ] Margin figures
   - [ ] Fullwidth figures

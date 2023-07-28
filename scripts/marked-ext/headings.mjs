@@ -8,13 +8,6 @@ export function heading(text, level, raw, slugger) {
     const className = subtitle ? "subtitle" : "";
     subtitleFound = subtitleFound || subtitle;
 
-    const tocWrapper = `
-    <nav id="toc">
-        <label class="margin-toggle" for="toc-toggle">Table of Contents</label>
-        <input id="toc-toggle" class="margin-toggle" type="checkbox">
-        <span id="toc-content" class="marginnote"></span>
-    </nav>
-    `
     const headerEl = `
             <${tag} id="${slug}" class="${className}">
               ${text}
@@ -23,5 +16,5 @@ export function heading(text, level, raw, slugger) {
               </a>
             </${tag}>`;
 
-    return !subtitle ? headerEl : `${headerEl}${tocWrapper}`;
+    return headerEl
 }

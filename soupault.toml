@@ -114,7 +114,6 @@
   content_container_selector = "main"
   post_header_template = '''
     <div id="post-header">
-      <h1 id="post-title">{{title}}</h1>
       <div><strong>Last update:</strong> <time id="post-date" datetime="{{date}}">{{date}}</time></div>
       {% if tags %}
         <div class="post-tags">
@@ -148,7 +147,13 @@
   feed_file = "atom.xml"
   use_section = "posts"
 
-[widgets.table-of-contents]
+[widgets.add-toc-wrapper]
+  widget = "include"
+  file = "templates/toc-nav.html"
+  selector = ".subtitle"
+  action = "insert_after"
+
+[widgets.generate-toc]
   #exclude_path_regex = '/index(.*)'
   widget = "toc"
   selector = "#toc-content"
@@ -160,6 +165,7 @@
   numbered_list = false
   heading_links = false
   use_heading_slug = true
+  after = "add-toc-wrapper"
 
 [widgets.conditional-remove-toc-wrapper]
   widget = "delete-if"
