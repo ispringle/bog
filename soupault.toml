@@ -14,21 +14,21 @@
   plugin_dirs = ["plugins"]
 
 [custom_options]
-  blog_summary_max_entries = 10
+  post_summary_max_entries = 10
   atom_feeds = false
-  site_url = "https://ian.ist"
+  site_url = "https://drollery.org"
   site_author = "Ian Shepard Pringle"
-  site_author_email = "hello@ian.ist"
-  site_title = "ian.ist"
-  site_subtitle = "Ian's World"
-  site_logo = "https://ian.ist/favicon.svg"
+  site_author_email = "hello@drollery.org"
+  site_title = "Drollery"
+  site_subtitle = "Life in the margins"
+  site_logo = "https://drollery.org/favicon.svg"
 
 [preprocessors]
   md = 'scripts/markdown.mjs'
 
 [index]
   index = true
-  section = "blog/"
+  section = "posts/"
   sort_descending = true
   extract_after_widgets = ['insert-reading-time', 'make-post-header']
   sort_by = "date"
@@ -41,9 +41,9 @@
   tags = { selector = ".post-tag", select_all = true }
   reading_time = { selector = "#reading-time" }
 
-[index.views.blog-index]
-  index_selector = "#blog-entries"
-  section = "blog"
+[index.views.post-index]
+  index_selector = "#post-entries"
+  section = "posts"
   index_template = """
     {% for e in entries %}
     <h2><a href="{{e.url}}">{{e.title}}</a></h2>
@@ -52,7 +52,7 @@
     <div class="post-tags">
        <strong>Tags: </strong>
        {%- for t in e.tags -%}
-         <a href="/blog/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
+         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
        {%- endfor -%}
     </div>
     {% endif %}
@@ -61,13 +61,13 @@
     <a href="{{e.url}}">Read more</a>
     {% endfor %}
   """
-  file = "helpers/blog-index.lua"
+  file = "helpers/posts-index.lua"
 
-[index.views.blog-summary]
-  index_selector = "#latest-blog-entries"
-  section = "blog"
+[index.views.post-summary]
+  index_selector = "#latest-post-entries"
+  section = "posts"
   index_template = """
-    {% set limit = int(soupault_config.custom_options.blog_summary_max_entries) %}
+    {% set limit = int(soupault_config.custom_options.post_summary_max_entries) %}
     <dl>
       {% for e in sublist(0, limit, entries) %}
       <dt>{{e.date}}</dt>
@@ -87,7 +87,7 @@
   widget = "title"
   selector = ["#page-title", "h1"]
   default = "Ian's World"
-  append = " &mdash; ian.ist"
+  append = " &mdash; Drollery.org"
 
 [widgets.insert-header]
   widget = "include"
@@ -109,8 +109,8 @@
 
 [widgets.make-post-header]
   widget = "post-header"
-  section = "blog/"
-  exclude_page = "blog/index.md"
+  section = "posts/"
+  exclude_page = "posts/index.md"
   content_container_selector = "main"
   post_header_template = '''
     <div id="post-header">
@@ -120,7 +120,7 @@
         <div class="post-tags">
          <span><strong>Tags:</strong> </span>
          {%- for t in tags -%}
-           <a href="/blog/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
+           <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
          {%- endfor -%}
          </div>
         {% endif %}
@@ -130,7 +130,7 @@
 [widgets.insert-reading-time-container]
   widget = "insert_html"
   after = "make-post-header"
-  section = "blog/"
+  section = "posts/"
   exclude_path_regex = "(.*)/index(.*)"
   action = "append_child"
   selector = "#post-header"
@@ -144,9 +144,9 @@
 
 [widgets.atom]
   widget = "atom"
-  page = "blog/index.md"
+  page = "posts/index.md"
   feed_file = "atom.xml"
-  use_section = "blog"
+  use_section = "posts"
 
 [widgets.table-of-contents]
   #exclude_path_regex = '/index(.*)'

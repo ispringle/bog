@@ -5,7 +5,7 @@
 ## A brief introduction
 
 [Bog](https://github.com/ispringle/bog) is a tool for creating my
-[website](https://ian.ist/) from Markdown files and some HTML. It turns the
+[website](https://drollery.org/) from Markdown files and some HTML. It turns the
 `.md` files into HTML that is compliant (mostly, minus my modifications) with
 tufte-css. In order to accamodate some features of of the tufte-css stylesheet,
 the Markdown syntax had to be added to and modified. Additionally, I dislike
