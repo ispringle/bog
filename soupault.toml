@@ -83,12 +83,6 @@
   action = "insert_before"
   file = "templates/header.html"
 
-[widgets.highlight-active-link]
-  widget = "section-link-highlight"
-  after = ["insert-header"]
-  selector = "nav"
-  active_link_class = "nav-active"
-
 [widgets.insert-footer]
   widget = "include"
   selector = "body"
@@ -99,9 +93,9 @@
   widget = "post-header"
   section = "posts/"
   exclude_page = "posts/index.md"
-  content_container_selector = "main"
+  content_container_selector = "hgroup"
   post_header_template = '''
-    <div id="post-header">
+    <div id="post-metadata">
       <div><strong>Last update:</strong> <time id="post-date" datetime="{{date}}">{{date}}</time></div>
       {% if tags %}
         <div class="post-tags">
@@ -120,14 +114,14 @@
   section = "posts/"
   exclude_path_regex = "(.*)/index(.*)"
   action = "append_child"
-  selector = "#post-header"
+  selector = "#post-metadata"
   html = '<div><strong>Reading time:</strong> <span id="reading-time"></span></div>'
 
 [widgets.insert-reading-time]
   widget = "reading-time"
   after = "insert-reading-time-container"
   selector = "#reading-time"
-  content_selector = "main"
+  content_selector = "hgroup"
 
 [widgets.atom]
   widget = "atom"
