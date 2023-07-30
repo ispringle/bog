@@ -1,7 +1,9 @@
 const titleFound = false;
 let subtitleFound = false;
 
-export function heading(text, level, raw, slugger) {
+const headingRegex =  /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/ 
+
+export function headingRenderer(text, level, raw, slugger) {
     const slug = slugger.slug(raw);
     const subtitle = level === 2 && !subtitleFound;
     const tag = subtitle ? "p" : `h${level}`;

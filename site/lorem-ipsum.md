@@ -38,9 +38,9 @@ website's core functionalit.
 
 ## Markdown Syntax
 
-## The Basics
+### The Basics
 
-## Bog-specific syntax
+### Bog-specific syntax
 
 To support Tufte-CSS, there are a number of additional elements to a markdown
 file including citations, epigraphs with optional "footer", and I fixed a few
@@ -113,111 +113,6 @@ Like footnotes, a side note uses a number to match the note to the place it's
 referenced[^aside:The way that tufte-css works, these numbers are actually computed with CSS!]. Margin notes do not use numbers but instead use a list of symbols.
 Once all the symbols have been used up they'll loop back to the first symbol
 again[^aside:The symbols that are used are "⁜", "†", and "‡"].
-
-## Tufte-CSS conventions
-
-## Bog conventions
-
-Nor Markdown nor CommonMark support document metadata so, for instance, there is no standard way to specify a title in a CommonMark document. It is not possible either to mark a paragraph as an epigraph, or as a figure caption, or as a margin note. 
-
-[*Def. xmark convention*: a simple rule that allows emulating metadata in CommonMark markdown documents.](sidenote) These limitations in Markdown, and in the CommonMark standard, are overcome in xmark by means of conventions, that assign special meanings to paragraphs. This section lists these conventions:
-
-### Document title convention
-
-> The document title is the first section of the document with level one. This is, the first paragraph tagged with a single '#' in the markdown document.
-
-It does not matter where you hide the first level one tag in your markdown document: xmark always places the title as the first paragraph of the document, using an ```<h1>``` HTML tag. The title does not appear in the Table of Contents.
-
-
-``` markdown
-# This is the document title
-```
-
-Of course, the document title is also set in the ```<title>``` HTML tag of the resulting document.
-
-### Document sutbitle convention
-
-> The document subtitle is the first section of the document with level two. This is, the first paragraph tagged with a double '##' in the document.
-
-For instance:
-
-``` markdown
-## This is the document subtitle
-```
-
-It does not matter where you specify the subtitle in the source document, xmark always places the subtitle as the second paragraph of the document, using the ```<p class='subtitle'>``` tufte-css element. The subtitle does not appear in the Table of Contents.
-
-### Epigraph convention
-
-CommonMark does not support epigraphs, but allows for nested block quotes. xmark makes use of this feature, making the double-nested block quotes work as epigraphs:
-
-> Two-level nested block quotes (i.e., a pagraph starting with ```>>```) are always transformed to epigraphs. 
-
-So, for instance, this text:
-
-``` markdown
->> xmark epigraphs are started with two ```>``` at the beginning of the paragraph.
-```
-
-Will generate a tufte-css epigraph like this one:
-
->> xmark epigraphs are started with two ```>``` at the beginning of the paragraph.
-
-Epigraphs may also contain a footer using plain HTML, but you will have to specify the ```footer``` and ```cite``` in plain HTML, like this one:
-
-```markdown
->> I do not paint things, I paint only the differences between things.
->> <footer>Henri Matisse, <cite>Henri Matisse Dessins: 
->> thèmes et variations</cite> (Paris, 1943), 37</footer></blockquote>
-```
-
-That gets translated in the following HTML:
-
->> I do not paint things, I paint only the differences between things.
->> <footer>Henri Matisse, <cite>Henri Matisse Dessins: thèmes et variations</cite> (Paris, 1943), 37</footer></blockquote>
-
-### Sidenote convention
-
-Nor markdown nor CommonMark support sidenotes [Sidenotes are like footnotes, except they don't force the user to scroll the page](sidenote). 
-
-Markdown uses the ```[link text](url)``` structure to define links. xmark abuses this structure with the following convention:
-
-> Sidenotes are normal markdown links that use the word ```sidenote``` as its url.
-
-Sidenote numbers are automatically generated, so there's no need to worry about that detail.
-
-``` markdown
-This is a normal paragraph with a 
-sidenote [Write your sidenotes 
-inside square brackets and then 
-add a ```(sidenote)``` 
-url.](sidenote).
-```
-
-Will produce the following paragraph with a sidenote:
-
-This is a normal paragraph with a sidenote [Write your sidenotes inside square brackets and then add a ```(sidenote)``` url.](sidenote).
-
-As in tufte-css, sidenotes (and margin notes, below) are visible in wider screens, but are hidden in smaller screens. In these smaller screens, the symbol &#8853;  (``&#8853;``) or the sidenote number can be tapped to view the content.
-
-### Margin note convention
-
-Margin notes are just like sidenotes, but do not have footnote-style numbers. The xmark convention for margin notes is similar to the previous convention:
-
-> To create a margin note write a normal markdown link, but use the word ```margin``` as the url.
-
-So, for instance, the markdown text:
-
-```markdown
-For example, this paragraph has a 
-[Margin note text here](margin)
-margin note.
-```
-
-Will result in the following paragraph with a margin note:
-
-For example, this paragraph has a [Margin note text here](margin) margin note.
-
 
 ### Figure convention
 

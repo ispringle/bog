@@ -4,6 +4,10 @@
   <post-tags>test, post</post-tags>
 </post-metadata>
 
+# First Post
+
+## A wonderful example post
+
 This is the first post. Its first paragraph is displayed on the main page as an excerpt.
 
 Other paragraphs could contain some interesting information. Unfortunately, they don't.

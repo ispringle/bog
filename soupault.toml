@@ -5,7 +5,7 @@
   build_dir = "dist/"
   site_dir = "site/"
   default_template_file = "templates/base.html"
-  default_content_selector = "article#content"
+  default_content_selector = "main"
   default_content_action = "append_child"
   index_page = "index"
   page_file_extensions = ["html", "md"]
@@ -35,17 +35,20 @@
   leaf_file = ".leaf"
 
 [index.fields]
-  title = { selector = ["#post-title", "h1"] }
+  title = { selector = "h1" }
   excerpt = { selector = ["#post-excerpt", "p"] }
   date = { selector = ["#post-date", "time"] }
   tags = { selector = ".post-tag", select_all = true }
   reading_time = { selector = "#reading-time" }
 
 [index.views.post-index]
-  index_selector = "#post-entries"
+  index_selector = "#content"
+  action = "insert_after"
   section = "posts"
   index_template = """
+    <section class="entries" id="index">
     {% for e in entries %}
+    <section class="entry">
     <h2><a href="{{e.url}}">{{e.title}}</a></h2>
     <div><strong>Last update:</strong> {{e.date}}</div>
     {% if e.tags %}
@@ -59,33 +62,18 @@
     <div><strong>Reading time:</strong> {{e.reading_time}}</div>
     <p>{{e.excerpt}}</p>
     <a href="{{e.url}}">Read more</a>
+    </section>
     {% endfor %}
+    </section>
   """
   file = "helpers/posts-index.lua"
-
-[index.views.post-summary]
-  index_selector = "#latest-post-entries"
-  section = "posts"
-  index_template = """
-    {% set limit = int(soupault_config.custom_options.post_summary_max_entries) %}
-    <dl>
-      {% for e in sublist(0, limit, entries) %}
-      <dt>{{e.date}}</dt>
-      <dd> <a href="{{e.url}}">{{e.title}}</a> </dd>
-      {% endfor %}
-      </ul>
-    </dl>
-  """
-
-#[widgets.inline-normalize-css]
-#  widget = "inline-normalize-css"
 
 [widgets.insert-generator-meta]
   widget = "generator-meta"
 
 [widgets.set-page-title]
   widget = "title"
-  selector = ["#page-title", "h1"]
+  selector = "h1"
   default = "Ian's World"
   append = " &mdash; Drollery.org"
 
@@ -150,8 +138,7 @@
 [widgets.add-toc-wrapper]
   widget = "include"
   file = "templates/toc-nav.html"
-  selector = ".subtitle"
-  action = "insert_after"
+  selector = "hgroup"
 
 [widgets.generate-toc]
   #exclude_path_regex = '/index(.*)'

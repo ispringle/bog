@@ -1,6 +1,10 @@
 <post-tags>test</post-tags>
 
 
+# Second Post
+
+## A wonderful second example post
+
 This paragraph is not used as a post excerpt, even though it's the first paragraph
 in the page. 
 
