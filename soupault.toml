@@ -12,6 +12,7 @@
   doctype = "<!DOCTYPE html>"
   plugin_discovery = true
   plugin_dirs = ["plugins"]
+  pretty_print_html = false
 
 [custom_options]
   post_summary_max_entries = 10
@@ -25,6 +26,10 @@
 
 [preprocessors]
   md = 'scripts/markdown.mjs'
+
+[asset_processors]
+  css = "cat {{source_file_path}} | $(npm bin)/minify --css > {{target_dir}}/{{source_file_base_name}}.min.css"
+
 
 [index]
   index = true
@@ -122,6 +127,7 @@
   after = "insert-reading-time-container"
   selector = "#reading-time"
   content_selector = "hgroup"
+  reading_speed = 250
 
 [widgets.atom]
   widget = "atom"

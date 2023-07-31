@@ -13,7 +13,7 @@ export function headingRenderer(text, level, raw, slugger) {
     const headerEl = `
             <${tag} id="${slug}" class="${className}">
               ${text}
-              <a name="${slug}" class="anchor" href="#${slug}">
+              <a name="${slug}" class="anchor" href="#${slug}" aria-label="link to heading ${text}">
                 <span class="header-link"></span>
               </a>
             </${tag}>`;

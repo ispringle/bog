@@ -42,7 +42,7 @@ export const marginnote = {
     return `
    <label class="margin-toggle ${sidenote ? "sidenote-number" : "marginnote-symbol"}" for="${
       token.slug
-    }"><a href="#${token.slug}-ref">${marginMark}</a>
+    }"><a href="#${token.slug}-ref" aria-text="jump to margin note">${marginMark}</a>
    </label> 
    <input class="margin-toggle" id="${token.slug}" type="checkbox">
    <span id="${token.slug}-ref" class="${sidenote ? "sidenote" : "marginnote"}" data-symbol="${marginMark}">${token.note}</span>

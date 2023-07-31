@@ -5,12 +5,15 @@
     },
     "dependencies": {
         "github-slugger": "^2.0.0",
+        "gulp": "^4.0.2",
+        "html-minifier": "^4.0.0",
         "marked": "^5.1.2",
         "marked-gfm-heading-id": "^3.0.4",
         "marked-mangle": "^1.1.0",
         "marked-smartypants": "^1.0.2",
-        "minify": "^9.2.0",
+        "minify": "^10.3.0",
         "normalize.css": "^8.0.1",
+        "purgecss": "^5.0.0",
         "tufte-css": "^1.8.0"
     }
 }

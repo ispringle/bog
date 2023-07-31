@@ -5,19 +5,23 @@ default: build
 install: package.json
 	@npm install
 
-.PHONY: setup
-setup: install
-	mkdir -p temp
-	@./scripts/css.sh
-
 .PHONY: build
-build: install setup
+build:
 	@./soupault
+
+.PHONE: minify
+minify:
+	@./scripts/minify.js
+	@cp -r dist/images dist/styles minified/
 
 .PHONE: clean
 clean:
-	@rm -rf dist/ temp/ site/styles/*.css site/styles/et-book/
+	@rm -rf dist/ minified/
 
 .PHONY: serve
 serve:
 	python -m http.server 8008 -d dist
+
+.PHONY: serve-minified
+serve-minified:
+	python -m http.server 8008 -d minified

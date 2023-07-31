@@ -1,6 +1,7 @@
 @font-face {
     font-family: drop-cap;
     src: url(/styles/drop-cap/floral.ttf);
+    font-display: swap;
 }
 
 * {
@@ -12,7 +13,7 @@
     url('/styles/manicules/manicule-alt-right-down.png') 81 126,
     auto;
 }
-footer {
+body > footer {
     display: flex;
     justify-content: space-between;
 }
