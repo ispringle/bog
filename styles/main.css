@@ -108,7 +108,7 @@ article#content > h2:first-of-type + p::first-line {
     font-size: 1.8rem;
 }
 
-article#content > h2:first-of-type + p::first-letter {
+article#content > section:first-of-type > p:first-of-type:first-letter {
     color: #903;
     font-family: drop-cap;
     float: left;
@@ -158,17 +158,6 @@ span.marginnote::before {
 }
 
 @media (min-width: 1920px) {
-    hgroup > nav {
-        position: fixed;
-        width: 669px;
-        top: 2rem;
-        margin-top: 1.4rem;
-        margin-bottom: 1.4rem;
-        padding-right: 0;
-        vertical-align: baseline;
-        font-size: 1.4rem;
-        line-height: 2rem;
-    }
     span.marginnote#toc-content {
         float: left;
         margin-right: unset;

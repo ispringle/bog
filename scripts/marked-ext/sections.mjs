@@ -2,8 +2,10 @@ let sectionLevel = 0;
 let hgroupSet = false;
 let subtitleRendered = false;
 
-const sectionRegexps = new Array(7).fill().map((e, i) => new RegExp(`^(#{${i + 1}} )[^]*?(?:\\n(?=\\1)|$)`));
-const hgroupRegex = /^(#{1}[ ]?[^]*?[\n$]+?#{2}[ ]?[^]*?\n)([^]*?(?:\\n(?=\\1)|$))/
+const sectionRegexps = new Array(6).fill()
+.map((e, i) => new RegExp(`^(#{${i + 2}} )[^]*?(?:\\n(?=\\1)|$)`));
+sectionRegexps.unshift(/^(#{1}[ ]?[^\n$]*?[\n$]+?(?:#{2}[ ]?[^\n$]*?\n){0,1})([^]*?(?:\\n(?=\\1)|$))/)
+
 
 const extension = {
     name: 'section',
@@ -15,17 +17,14 @@ const extension = {
         const match = src.match(sectionRegexps[sectionLevel]);
         if (match) {
             sectionLevel++;
-            let tokens;
+            let tokens = this.lexer.blockTokens(match[0]);
             const hgroup = {};
             let kind = "heading"
-            if (!hgroupSet && src.match(hgroupRegex)) {
-                const hgroupMatch = src.match(hgroupRegex)
-                hgroup.tokens = this.lexer.blockTokens(hgroupMatch[1]),
-                tokens = this.lexer.blockTokens(hgroupMatch[2]);
+            if (!hgroupSet && sectionLevel === 1) {
                 hgroupSet = true;
+                hgroup.tokens = this.lexer.blockTokens(match[1]),
+                tokens = this.lexer.blockTokens(match[2]);
                 kind = "hgroup"
-            } else {
-                tokens = this.lexer.blockTokens(match[0]);
             }
             sectionLevel--;
             const header = match[0].split("\n")[0].replaceAll("#", "")

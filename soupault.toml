@@ -131,11 +131,11 @@
 
 [widgets.add-toc-wrapper]
   widget = "include"
+  exclude_path_regex = ['.*/index(.*)', '/about(.*)']
   file = "templates/toc-nav.html"
   selector = "hgroup"
 
 [widgets.generate-toc]
-  #exclude_path_regex = '/index(.*)'
   widget = "toc"
   selector = "#toc-content"
   action = "replace_content"
@@ -151,4 +151,4 @@
 [widgets.conditional-remove-toc-wrapper]
   widget = "delete-if"
   target_selector = "nav#toc"
-  check_selector = "#toc-content"
+  check_selector = "ul.toc-1"

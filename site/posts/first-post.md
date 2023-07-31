@@ -11,3 +11,11 @@
 This is the first post. Its first paragraph is displayed on the main page as an excerpt.
 
 Other paragraphs could contain some interesting information. Unfortunately, they don't.
+
+## Another wonderful heading
+
+This is some content under this heading. Isn't it wonderful?
+
+### A great subheading
+
+This is just such a great subheading. I love it!

@@ -11,12 +11,13 @@ check_selector = config["check_selector"]
 
 -- Plugin code
 
-if (not target) or (not check_selector) then
+if (not target_selector) or (not check_selector) then
   Log.warning("target_selector and check_selector options must be configured")
 else
-  target = HTML.select(html, target_selector)
-  check = HTML.select(html, check_selector)
+  target = HTML.select_one(html, target_selector)
+  check = HTML.select_one(html, check_selector)
   if  HTML.is_empty(check) then
+    Log.info("Deleting target_selector ", target_selector)
     HTML.delete(target)
   end
 end
