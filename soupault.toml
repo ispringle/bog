@@ -35,7 +35,7 @@
   index = true
   section = "posts/"
   sort_descending = true
-  extract_after_widgets = ['insert-reading-time', 'make-post-header']
+  extract_after_widgets = ['insert-reading-time', 'make-post-metadata']
   sort_by = "date"
   leaf_file = ".leaf"
 
@@ -94,9 +94,10 @@
   action = "append_child"
   file = "templates/footer.html"
 
-[widgets.make-post-header]
+[widgets.make-post-metadata]
   widget = "post-header"
   section = "posts/"
+  action = "append_child"
   exclude_page = "posts/index.md"
   content_container_selector = "hgroup"
   post_header_template = '''
@@ -115,7 +116,7 @@
 
 [widgets.insert-reading-time-container]
   widget = "insert_html"
-  after = "make-post-header"
+  after = "make-post-metadata"
   section = "posts/"
   exclude_path_regex = "(.*)/index(.*)"
   action = "append_child"
