@@ -77,13 +77,7 @@ end
 function clean_up(elem)
   local parent = HTML.parent(elem)
   if parent then
-    if (HTML.get_tag_name(parent) == "p") and (size(HTML.children(parent)) == 1) then
-      HTML.delete(parent)
-    else
-      HTML.unwrap(elem)
-    end
-  else
-    HTML.delete(elem)
+    HTML.delete(parent)
   end
 end
 
@@ -109,37 +103,15 @@ else
   HTML.set_tag_name(post_date, "time")
 end
 
--- Extract and clean up the <post-tags> element
+-- Extract and clean up the <tags> element
 -- It's supposed to look like <post-tags>foo, bar, baz</post-tags>
 -- We extract the tags string and split it into individual tags
-post_tags = HTML.select_one(page, "post-tags")
+post_tags = HTML.select_one(page, "meta-tags")
 tags = HTML.strip_tags(post_tags)
 tags = Regex.split(tags, ",")
 Table.apply_to_values(String.trim, tags)
 env["tags"] = tags
 clean_up(post_tags)
-
---- Handle the <post-excerpt> element
-
-post_excerpt = HTML.select_one(page, "post-excerpt")
-env["excerpt"] = HTML.inner_html(post_excerpt)
--- The logic for <post-excerpt> is somewhat more complicated:
--- if it's bare 
-local excerpt_parent = HTML.parent(post_excerpt)
-if HTML.get_tag_name(excerpt_parent) == "p" then
-  -- If it looks like <p><post-excerpt>...</post-excerpt></p>,
-  -- then we can just move its content to the parent paragraph
-  -- and call it a day
-  HTML.unwrap(excerpt)
-else
-  local children = HTML.select_any_of(excerpt, {"p", "div"})
-  if children then
-    HTML.set_tag_name(post_excerpt, "div")
-  else
-    HTML.set_tag_name(post_excerpt, "p")
-  end
-  HTML.set_attribute(post_excerpt, "id", "post-excerpt")
-end
 
 -- Now clean up the <post-metadata> container
 post_metadata_container = HTML.select_one(page, "post-metadata")
@@ -148,7 +120,6 @@ if post_metadata_container then
 end
 
 -- Render the post header and add it to the page
-
 tmpl = config["post_header_template"]
 header = HTML.parse(String.render_template(tmpl, env))
-HTML.prepend_child(content_container, header)
+HTML.append_child(content_container, header)

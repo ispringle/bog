@@ -33,25 +33,79 @@
 
 [index]
   index = true
-  section = "posts/"
-  sort_descending = true
   extract_after_widgets = ['insert-reading-time', 'make-post-metadata']
-  sort_by = "date"
   leaf_file = ".leaf"
 
 [index.fields]
   title = { selector = "h1" }
-  excerpt = { selector = ["#post-excerpt", "p"] }
+  excerpt = { selector = ["#preamble", "p"] }
   date = { selector = ["#post-date", "time"] }
   tags = { selector = ".post-tag", select_all = true }
   reading_time = { selector = "#reading-time" }
 
-[index.views.post-index]
-  index_selector = "#content"
-  action = "insert_after"
-  section = "posts"
+[index.views.index-all-pages]
+  index_selector = "#all-pages-index"
+  sort_by = "title"
+  sort_type = "lexicographic"
+  sort_descending = false
+  strict_sort = false
   index_template = """
-    <section class="entries" id="index">
+    {%- set limit = 5 -%}
+    {% for n in range(0, limit - 1)  %}
+    {%- set e = entries[n] -%}
+    <section class="entry">
+    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
+    <div><strong>Last update:</strong> {{e.date}}</div>
+    {% if e.tags %}
+    <div class="post-tags">
+       <strong>Tags: </strong>
+       {%- for t in e.tags -%}
+         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
+       {%- endfor -%}
+    </div>
+    {% endif %}
+    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
+    <p>{{e.excerpt}}</p>
+    <a href="{{e.url}}">Read more</a>
+    </section>
+    {% endfor %}
+  """
+  file = "helpers/all-pages-index.lua"
+
+[index.views.index-updates]
+  index_selector = "#updates-index"
+  sort_by = "date"
+  sort_descending = true
+  index_template = """
+    {%- set limit = 5 -%}
+    {% for n in range(0, limit - 1)  %}
+    {%- set e = entries[n] -%}
+    <section class="entry">
+    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
+    <div><strong>Last update:</strong> {{e.date}}</div>
+    {% if e.tags %}
+    <div class="post-tags">
+       <strong>Tags: </strong>
+       {%- for t in e.tags -%}
+         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
+       {%- endfor -%}
+    </div>
+    {% endif %}
+    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
+    <p>{{e.excerpt}}</p>
+    <a href="{{e.url}}">Read more</a>
+    </section>
+    {% endfor %}
+  """
+
+[index.views.all-pages]
+  index_selector = "#all-pages"
+  page = "all.html"
+  sort_by = "title"
+  sort_type = "lexicographic"
+  sort_descending = false
+  strict_sort = false
+  index_template = """
     {% for e in entries %}
     <section class="entry">
     <h2><a href="{{e.url}}">{{e.title}}</a></h2>
@@ -69,9 +123,33 @@
     <a href="{{e.url}}">Read more</a>
     </section>
     {% endfor %}
-    </section>
   """
-  file = "helpers/posts-index.lua"
+  #file = "helpers/all-pages-index.lua"
+
+[index.views.news]
+  index_selector = "#news"
+  page = "news.html"
+  sort_by = "date"
+  sort_descending = true
+  index_template = """
+    {% for e in entries %}
+    <section class="entry">
+    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
+    <div><strong>Last update:</strong> {{e.date}}</div>
+    {% if e.tags %}
+    <div class="post-tags">
+       <strong>Tags: </strong>
+       {%- for t in e.tags -%}
+         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
+       {%- endfor -%}
+    </div>
+    {% endif %}
+    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
+    <p>{{e.excerpt}}</p>
+    <a href="{{e.url}}">Read more</a>
+    </section>
+    {% endfor %}
+  """
 
 [widgets.insert-generator-meta]
   widget = "generator-meta"
@@ -81,7 +159,7 @@
   selector = "h1"
   default = "Ian's World"
   append = " &mdash; Drollery.org"
-
+  
 [widgets.insert-header]
   widget = "include"
   selector = "main"
@@ -96,10 +174,9 @@
 
 [widgets.make-post-metadata]
   widget = "post-header"
-  section = "posts/"
   action = "append_child"
-  exclude_page = "posts/index.md"
   content_container_selector = "hgroup"
+  exclude_path_regex = "(.*)/index(.*)"
   post_header_template = '''
     <div id="post-metadata">
       <div><strong>Last update:</strong> <time id="post-date" datetime="{{date}}">{{date}}</time></div>
@@ -117,7 +194,6 @@
 [widgets.insert-reading-time-container]
   widget = "insert_html"
   after = "make-post-metadata"
-  section = "posts/"
   exclude_path_regex = "(.*)/index(.*)"
   action = "append_child"
   selector = "#post-metadata"
@@ -138,7 +214,7 @@
 
 [widgets.add-toc-wrapper]
   widget = "include"
-  exclude_path_regex = ['.*/index(.*)', '/about(.*)']
+  exclude_path_regex = ['.*/index(.*)', '/about(.*)', 'all(.*)', 'news(.*)']
   file = "templates/toc-nav.html"
   selector = "hgroup"
 

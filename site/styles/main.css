@@ -13,6 +13,11 @@
     url('/styles/manicules/manicule-alt-right-down.png') 81 126,
     auto;
 }
+
+html {
+    height: 100vh;
+}
+
 body > footer {
     display: flex;
     justify-content: space-between;
@@ -76,8 +81,23 @@ content: "";
 inset: 0;
 z-index: 1;
 }
-#index.entries {
-    padding: 0 5rem;
+
+#indices {
+    display: flex;
+    margin-left: -5rem;
+    width: calc(55% + 10rem);
+    gap: 2rem;
+}
+
+#indices section {
+    flex: 50%;
+}
+#indices p {
+    width: unset;
+}
+
+.entries {
+    padding: 0 1rem;
 }
 .toc-3 {
     margin-left: 2rem;

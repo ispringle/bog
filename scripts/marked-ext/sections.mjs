@@ -4,7 +4,7 @@ let subtitleRendered = false;
 
 const sectionRegexps = new Array(6).fill()
 .map((e, i) => new RegExp(`^(#{${i + 2}} )[^]*?(?:\\n(?=\\1)|$)`));
-sectionRegexps.unshift(/^(#{1}[ ]?[^\n$]*?[\n$]+?(?:#{2}[ ]?[^\n$]*?\n){0,1})([^]*?(?:\\n(?=\\1)|$))/)
+sectionRegexps.unshift(/^(#{1}[ ]?[^\n$]*?[\n$]+(?:#{2}[ ]?[^\n$]*[\n$]){0,1})([^]*(?:\n|$))/)
 
 
 const extension = {
@@ -40,16 +40,30 @@ const extension = {
         }
     },
     renderer(token) {
-        const id = this.parser.slugger.slug(`section${token.header}`);
         if (token.level === 1 && token.kind === "hgroup") {
-            return `<article id="content"><hgroup>${this.parser.parse(token.hgroup.tokens)}</hgroup>${this.parser.parse(token.tokens)}</article>`
-        } else if (token.level === 1) {
-            return `<article id="content"><hgroup>${this.parser.parse(token.tokens[0])}</hgroup>${this.parser.parse(token.tokens)}</article>`
+            let preamble = [];
+            let body = [];
+            let firstHeading = false;
+            for (let n in token.tokens) {
+                const t = token.tokens[n]
+                if (t.type === 'section') {
+                    firstHeading = true;
+                    body.push(t);
+                } else {
+                    preamble.push(t)
+                }
+            }
+            const hgroupHTML = token.hgroup.tokens ? `<hgroup>${this.parser.parse(token.hgroup.tokens)}</hgroup>` : "";
+            const preambleHTML = preamble ? `<section id=preamble>${this.parser.parse(preamble)}</section>` : "";
+            const bodyHTML = body ? this.parser.parse(body) : "";
+            // console.log(preambleHTML, bodyHTML)
+            return `<article id="content">${hgroupHTML}${preambleHTML}${bodyHTML}</article>`
         } else if (hgroupSet && token.level === 2 && !subtitleRendered) {
             subtitleRendered = true;
             return `${this.parser.parse(token.tokens)}`
         } else {
-            return `<section id="${id}">\n${this.parser.parse(token.tokens)}</section>\n`;
+            const id = this.parser.slugger.slug(`section${token.header}`);
+            return `<section id="${id}" class="block level${token.level}">\n${this.parser.parse(token.tokens)}</section>\n`;
         }
     }
 };

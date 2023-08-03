@@ -2,6 +2,14 @@
 
 ## Ian S. Pringle
 
+The "preamble" of an article comes between the subtitle and the first
+second-level heading.
+
+This is my "Lorem Ipsum" page, which is just a visual test bed for most/all
+features of my website. This is largely to make sure my custom markdown parser,
+styling, and compiler are all working happily together and that everything works
+at scale.
+
 ## A brief introduction
 
 [Bog](https://github.com/ispringle/bog) is a tool for creating my
@@ -270,4 +278,4 @@ Some links you may find of interest:
 
 Many thanks go to Edward Tufte, Dave Liepmann, John Gruber, John MacFarlane, Ivan Sagalaev and the CommonMark volunteers.
 
-
+<meta-tags>meta</meta-tags>
