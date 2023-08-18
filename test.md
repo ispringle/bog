@@ -1,7 +1,0 @@
-# Title
-
-## Subtitle
-
-## Heading
-
-Blah

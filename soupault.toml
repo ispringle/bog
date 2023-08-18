@@ -27,10 +27,6 @@
 [preprocessors]
   md = 'scripts/markdown.mjs'
 
-[asset_processors]
-  css = "cat {{source_file_path}} | $(npm bin)/minify --css > {{target_dir}}/{{source_file_base_name}}.min.css"
-
-
 [index]
   index = true
   extract_after_widgets = ['insert-reading-time', 'make-post-metadata']
