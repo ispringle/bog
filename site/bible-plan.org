@@ -1,0 +1,56 @@
+#+title: Bible Plan
+
+* DONE <2023-05-01 Mon> [10/10] :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:18   ]
+** DONE Matthew 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:15]
+[[file:sources/bible/web/matthew/01.org]]
+** DONE Genesis 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:15]
+[[file:sources/bible/web/genesis/01.org]]
+** DONE Romans 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:15]
+[[file:sources/bible/web/romans/01.org]]
+** DONE 1 Thessalonians 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:15]
+[[file:sources/bible/web/1-thessalonians/01.org]]
+** DONE Job 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:16]
+[[file:sources/bible/web/job/01.org]]
+** DONE Psalms 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:16]
+[[file:sources/bible/web/psalm/001.org]]
+** DONE Proverbs 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:16]
+[[file:sources/bible/web/proverbs/01.org]]
+** DONE Joshua 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:16]
+[[file:sources/bible/web/joshua/01.org]]
+** DONE Isaiah 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:16]
+[[file:sources/bible/web/isaiah/01.org]]
+** DONE Acts 1 :ARCHIVE:
+CLOSED: [2023-05-02 Tue 10:16]
+[[file:sources/bible/web/acts/01.org]]
+
+* TODO <2023-05-02 Tue> [10/10]
+** TODO Matthew 2
+[[file:sources/bible/web/matthew/02.org]]
+** TODO Genesis 2
+[[file:sources/bible/web/genesis/02.org]]
+** TODO Romans 2
+[[file:sources/bible/web/romans/02.org]]
+** TODO 1 Thessalonians 2
+[[file:sources/bible/web/1-thessalonians/02.org]]
+** TODO Job 2
+[[file:sources/bible/web/job/02.org]]
+** TODO Psalms 2
+[[file:sources/bible/web/psalm/002.org]]
+** TODO Proverbs 2
+[[file:sources/bible/web/proverbs/02.org]]
+** TODO Joshua 2
+[[file:sources/bible/web/joshua/02.org]]
+** TODO Isaiah 2
+[[file:sources/bible/web/isaiah/02.org]]
+** TODO Acts 2
+[[file:sources/bible/web/acts/02.org]]

@@ -1,0 +1,26 @@
+:PROPERTIES:
+:AUTHOR: Ian S. Pringle
+:CREATED: <2022-11-01 Tue>
+:MODIFIED: <2022-09-26 Mon 17:21>
+:PRIVATE: t
+:TYPE: todo
+:END:
+#+title: Jack Henry
+#+startup: overview
+
+* Clock Tables
+** This Week
+:LOGBOOK:
+:END:
+#+BEGIN: clocktable :scope file-with-archives :maxlevel 2 :step day :block thisweek
+* Tasks
+* Projects
+* Meetings
+** MEET with Brian TO review performance assessment system :MEETING:
+:LOGBOOK:
+CLOCK: [2022-11-01 Tue 11:18]--[2022-11-01 Tue 12:00] =>  0:42
+:END:
+CREATED: [2022-11-01 Tue 11:18]
+
+https://pas.jackhenry.com/home
+Keep notes on what you learn, when you share it, etc.

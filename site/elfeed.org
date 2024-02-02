@@ -1,0 +1,44 @@
+:PROPERTIES:
+:AUTHOR: Ian S. Pringle
+:CREATED: <2022-08-04 Thu>
+:MODIFIED: <2022-09-07 Wed 17:10>
+:PRIVATE: t
+:END:
+#+title: RSS
+
+* sites :elfeed:
+** tech blogs :tech:blog:
+*** langs :langs:
+**** rust :rust:
+***** [[https://blog.rust-lang.org/feed.xml][Rust Blog]]
+***** [[https://gamedev.rs/rss.xml][Rust Game Development Working Group]] :video-games:
+*** emacs :emacs:
+**** https://blog.tygr.info/rss.xml
+**** https://blog.sidhartharya.com/index.xml
+**** http://cachestocaches.com/feed/
+**** https://pragmaticemacs.wordpress.com/feed/
+**** https://cyberchris.xyz/posts/index.xml
+**** https://blog.leonardotamiano.xyz/index.xml
+**** https://shom.dev/index.xml
+*** game stuff :video-games:
+**** http://weblog.jamisbuck.org/feed.xml
+**** https://fabiensanglard.net/rss.xml
+*** no category
+**** https://stevelosh.com/rss.xml
+**** [[https://starbeamrainbowlabs.com/blog/feed.php][Stardust | Starbeamrainbowlabs' Blog]]
+**** [[https://pig-monkey.com/feed.atom][pig-monkey.com]]
+**** [[https://lukesmith.xyz/rss.xml][The Latest from Luke]]
+**** [[https://hackerfactor.com/blog/index.php?%2Ffeeds%2Findex.rss2][The Hacker Factor Blog]]
+**** [[https://ridiculousfish.com/blog/atom.xml][ridiculous_fish]]
+**** [[http://spritesmods.com/rss.php][Sprites mods]]
+**** [[https://blog.sanctum.geek.nz/feed/][Arabesque]]
+**** [[https://blog.acolyer.org/feed/][the morning paper]]
+**** [[https://calbryant.uk/blog/index.xml][Blogs on Callan Bryant]]
+**** [[https://catonmat.net/feed][catonmat.net – less is more]]
+**** [[https://blog.codinghorror.com/rss/][Coding Horror]]
+**** [[https://danluu.com/atom.xml][Dan Luu]]
+**** [[https://www.dannysalzman.com/feed.xml][Danny Salzman]]
+**** [[https://blog.regehr.org/feed][Embedded in Academia]]
+**** [[https://www.joelonsoftware.com/feed/][Joel on Software]]
+** comics :comics:
+*** [[http://comicfeeds.chrisbenard.net/view/dilbert/default][Dilbert Daily Strip]]

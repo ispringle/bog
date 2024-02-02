@@ -8,7 +8,7 @@
   default_content_selector = "main"
   default_content_action = "append_child"
   index_page = "index"
-  page_file_extensions = ["html", "md"]
+  page_file_extensions = ["html", "org"]
   doctype = "<!DOCTYPE html>"
   plugin_discovery = true
   plugin_dirs = ["plugins"]
@@ -25,127 +25,8 @@
   site_logo = "https://drollery.org/favicon.svg"
 
 [preprocessors]
-  md = 'scripts/markdown.mjs'
-
-[index]
-  index = true
-  extract_after_widgets = ['insert-reading-time', 'make-post-metadata']
-  leaf_file = ".leaf"
-
-[index.fields]
-  title = { selector = "h1" }
-  excerpt = { selector = ["#preamble", "p"] }
-  date = { selector = ["#post-date", "time"] }
-  tags = { selector = ".post-tag", select_all = true }
-  reading_time = { selector = "#reading-time" }
-
-[index.views.index-all-pages]
-  index_selector = "#all-pages-index"
-  sort_by = "title"
-  sort_type = "lexicographic"
-  sort_descending = false
-  strict_sort = false
-  index_template = """
-    {%- set limit = 5 -%}
-    {% for n in range(0, limit - 1)  %}
-    {%- set e = entries[n] -%}
-    <section class="entry">
-    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
-    <div><strong>Last update:</strong> {{e.date}}</div>
-    {% if e.tags %}
-    <div class="post-tags">
-       <strong>Tags: </strong>
-       {%- for t in e.tags -%}
-         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
-       {%- endfor -%}
-    </div>
-    {% endif %}
-    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
-    <p>{{e.excerpt}}</p>
-    <a href="{{e.url}}">Read more</a>
-    </section>
-    {% endfor %}
-  """
-  file = "helpers/all-pages-index.lua"
-
-[index.views.index-updates]
-  index_selector = "#updates-index"
-  sort_by = "date"
-  sort_descending = true
-  index_template = """
-    {%- set limit = 5 -%}
-    {% for n in range(0, limit - 1)  %}
-    {%- set e = entries[n] -%}
-    <section class="entry">
-    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
-    <div><strong>Last update:</strong> {{e.date}}</div>
-    {% if e.tags %}
-    <div class="post-tags">
-       <strong>Tags: </strong>
-       {%- for t in e.tags -%}
-         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
-       {%- endfor -%}
-    </div>
-    {% endif %}
-    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
-    <p>{{e.excerpt}}</p>
-    <a href="{{e.url}}">Read more</a>
-    </section>
-    {% endfor %}
-  """
-
-[index.views.all-pages]
-  index_selector = "#all-pages"
-  page = "all.html"
-  sort_by = "title"
-  sort_type = "lexicographic"
-  sort_descending = false
-  strict_sort = false
-  index_template = """
-    {% for e in entries %}
-    <section class="entry">
-    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
-    <div><strong>Last update:</strong> {{e.date}}</div>
-    {% if e.tags %}
-    <div class="post-tags">
-       <strong>Tags: </strong>
-       {%- for t in e.tags -%}
-         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
-       {%- endfor -%}
-    </div>
-    {% endif %}
-    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
-    <p>{{e.excerpt}}</p>
-    <a href="{{e.url}}">Read more</a>
-    </section>
-    {% endfor %}
-  """
-  #file = "helpers/all-pages-index.lua"
-
-[index.views.news]
-  index_selector = "#news"
-  page = "news.html"
-  sort_by = "date"
-  sort_descending = true
-  index_template = """
-    {% for e in entries %}
-    <section class="entry">
-    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
-    <div><strong>Last update:</strong> {{e.date}}</div>
-    {% if e.tags %}
-    <div class="post-tags">
-       <strong>Tags: </strong>
-       {%- for t in e.tags -%}
-         <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
-       {%- endfor -%}
-    </div>
-    {% endif %}
-    <div><strong>Reading time:</strong> {{e.reading_time}}</div>
-    <p>{{e.excerpt}}</p>
-    <a href="{{e.url}}">Read more</a>
-    </section>
-    {% endfor %}
-  """
+  #md = 'scripts/markdown.mjs'
+  org = 'pandoc -f org -t html'
 
 [widgets.insert-generator-meta]
   widget = "generator-meta"
@@ -167,67 +48,3 @@
   selector = "body"
   action = "append_child"
   file = "templates/footer.html"
-
-[widgets.make-post-metadata]
-  widget = "post-header"
-  action = "append_child"
-  content_container_selector = "hgroup"
-  exclude_path_regex = "(.*)/index(.*)"
-  post_header_template = '''
-    <div id="post-metadata">
-      <div><strong>Last update:</strong> <time id="post-date" datetime="{{date}}">{{date}}</time></div>
-      {% if tags %}
-        <div class="post-tags">
-         <span><strong>Tags:</strong> </span>
-         {%- for t in tags -%}
-           <a href="/posts/tag/{{t}}"><span class="post-tag">{{t}}</span></a>{% if not loop.last %}, {% endif %}
-         {%- endfor -%}
-         </div>
-        {% endif %}
-    </div>
-'''
-
-[widgets.insert-reading-time-container]
-  widget = "insert_html"
-  after = "make-post-metadata"
-  exclude_path_regex = "(.*)/index(.*)"
-  action = "append_child"
-  selector = "#post-metadata"
-  html = '<div><strong>Reading time:</strong> <span id="reading-time"></span></div>'
-
-[widgets.insert-reading-time]
-  widget = "reading-time"
-  after = "insert-reading-time-container"
-  selector = "#reading-time"
-  content_selector = "hgroup"
-  reading_speed = 250
-
-[widgets.atom]
-  widget = "atom"
-  page = "posts/index.md"
-  feed_file = "atom.xml"
-  use_section = "posts"
-
-[widgets.add-toc-wrapper]
-  widget = "include"
-  exclude_path_regex = ['.*/index(.*)', '/about(.*)', 'all(.*)', 'news(.*)']
-  file = "templates/toc-nav.html"
-  selector = "hgroup"
-
-[widgets.generate-toc]
-  widget = "toc"
-  selector = "#toc-content"
-  action = "replace_content"
-  min_level = 2
-  toc_list_class = "toc"
-  toc_class_levels = true
-  valid_html = true
-  numbered_list = false
-  heading_links = false
-  use_heading_slug = true
-  after = "add-toc-wrapper"
-
-[widgets.conditional-remove-toc-wrapper]
-  widget = "delete-if"
-  target_selector = "nav#toc"
-  check_selector = "ul.toc-1"

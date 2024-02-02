@@ -1,0 +1,32 @@
+:PROPERTIES:
+:AUTHOR: Ian S. Pringle
+:CREATED: <2022-08-15 Mon>
+:MODIFIED: <2022-09-12 Mon 15:57>
+:PRIVATE: t
+:TYPE: log
+:END:
+#+title: Weekly Journal
+
+* 2023
+** 2022-W16
+:LOGBOOK:
+:END:
+*** Plan
+**** Work
+***** Goals [/]
+- [ ]
+***** Changes
+No planned changes this week
+***** PTO
+No planned PTO this week
+***** Notes
+**** Personal
+***** Goals [/]
+***** Notes
+**** Farm
+***** Goals [/]
+***** Notes
+*** Review
+**** Work
+**** Personal
+**** Farm

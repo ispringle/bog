@@ -1,0 +1,7 @@
+:PROPERTIES:
+:AUTHOR: Ian S. Pringle
+:CREATED: <2022-08-04 Thu>
+:MODIFIED: <2022-09-10 Sat 10:10>
+:TYPE: all
+:END:
+These are all pages on my site, sorted by newest. The only pages not displayed here are indices.

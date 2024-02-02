@@ -1,0 +1,496 @@
+:PROPERTIES:
+:AUTHOR: Ian S. Pringle
+:CREATED: <2022-09-01 Thu>
+:MODIFIED: <2022-09-06 Tue 15:54>
+:TYPE: literate
+:tangle-dir: ~/org/server/
+:ID:       38e111be-5b40-4f41-b960-f520cada1b79
+:END:
+#+title: Server
+
+* About
+This is the /literate/ file that defines a server. All of the source files for Lit
+Server are defined here and are "tangled" together with =org-tangle=. This is the
+only file that should ever be edited (other than the README).
+
+* README.org
+:PROPERTIES:
+:header-args: :tangle ~/org/server/README.org :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+It seems a little weird to build an org file, with an org file. I'm really only
+doing this because the =server= directory is entry built from this org file, but
+the intention is that I compile the files in =server= locally and commit them.
+There is a chance that someone -- including future me -- might come upon this
+=server= directory and be uninformed about it's creation and use.
+#+begin_src org
+,#+title: Readme
+
+NOTICE: This file and all files in this directory were built with =server.org=
+and should not be directly edited!
+
+This is the server dir used to deploy my bitranchlabs server infra.
+#+end_src
+
+* Deploy
+There are a number of ways that this could be deployed. I think I will
+eventually settle on gitlab-ci, but incase I want to deploy from local I have
+come up with a solution using the package =(emacs-ssh-deploy)=.
+** deploy.sh
+:PROPERTIES:
+:header-args: :tangle ~/org/server/deploy.sh :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+This is a simple shell script to deploy my server. It assumes all the files that
+are needed can be found in the remote path =/opt/lit-server= and it needs to be
+run as root.
+#+begin_src bash :shebang "#!/usr/bin/env bash"
+cp /home/ian/lit-server/Caddyfile /etc/caddy/Caddyfile
+cp /home/ian/lit-server/docker-compose.yml /opt/composed/docker-compose.yml
+cd /opt/composed/
+docker-compose up -d
+systemctl reload caddy
+#+end_src
+
+** Makefile
+:PROPERTIES:
+:header-args: :tangle ~/org/server/Makefile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+Emacs can run make files, that might be enough for local deployments... This
+sort of works actually, but the =deploy-remote= stuff seems to just always fail
+and then I have to ssh into the machine and run that exact same command. Sort of
+ridiculous tbh...
+
+Caddy has a =--watch= flag, might be worth looking at using that to watch for
+changes to the config. But it could also be a disaster, I'm not sure...
+#+begin_src makefile
+.PHONE: all deploy deploy-local install sync setup, clean
+all: sync deploy-remote
+clean:
+		ssh ian@server-01.bitranclabs.net rm -rf ~/lit-server
+deploy-local:
+		cp /home/ian/lit-server/Caddyfile /etc/caddy/Caddyfile
+		cp /home/ian/lit-server/docker-compose.yml /opt/composed/docker-compose.yml
+		cd /opt/composed/
+		docker-compose up -d
+		systemctl reload caddy
+deploy-remote:
+		ssh root@server-01.bitranchlabs.net bash /home/ian/lit-server/deploy.sh
+install: deploy-remote
+setup:
+		ssh ian@server-01.bitranchlabs.net mkdir -p /home/ian/lit-server
+		ssh root@server-01.bitranchlabs.net mkdir -p /opt/composed
+sync: setup
+		@echo "Publishing to remote"
+		rsync -chazve ssh ~/org/server/ ian@server-01.bitranchlabs.net:~/lit-server/
+#+end_src
+** emacs-ssh-deploy :ARCHIVE:
+:PROPERTIES:
+:header-args: :tangle ~/org/server/.dir-locals.el :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+<2022-09-01 Thu>: This isn't working so... :(
+
+This is the configuration to set the right values in =.dir-locals.el=. This file
+is in the server directory and so deployments have to be initiated /from/ within
+that directory, but I think this is acceptable, if it ain't I'll change it!
+#+begin_src elisp :tangle no
+((nil . (
+  (ssh-deploy-root-local . "/Users/ian/org/server/")
+  (ssh-deploy-root-remote . "/ssh:ian@server-01.bitranchlabs.net|sudo::/opt/lit-server/")
+  (ssh-deploy-async . 1)
+  (ssh-deploy-async-with-threads . 0)
+  (ssh-deploy-on-explicit-save . 0)
+  (ssh-deploy-script . (lambda()
+                         (let ((default-directory ssh-deploy-root-local))
+                           (shell-command "bash deploy.sh") (ssh-deploy-upload-handler))))
+)))
+#+end_src
+
+* Caddy
+
+We're going to try using Caddy for the server for this. I was using Traefik in
+docker and it was just crapping out, so I gave up after much frustration and
+decided to put the server /outisde/ of Docker. Caddy is a very straightforward
+server to setup but has a lot of features. Just an aside, I'm using "shell" for
+the src type on these blocks because org doesn't know what a =Caddyfile= type is,
+and shell and Caddy share the same comment types (ie =#= ).
+
+** Globals
+:PROPERTIES:
+:header-args: :tangle ~/org/server/Caddyfile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+Here are the global defaults for Caddy. Since Caddy comes with TLS by default,
+all we have to do is give it an email address:
+#+begin_src shell
+{
+    email ian@dapringles.com
+}
+#+end_src
+
+These aren't exactly "global" but they're some defaults that'll be used with
+mosta/all subsequent server configurations. First up "encoding", some of these
+settings are the defaults, I am adding them for visibility:
+#+begin_src shell
+(encoding) {
+  encode {
+    zstd
+    gzip
+  }
+}
+#+end_src
+
+Some default headers we want to upstream:
+#+begin_src shell
+(upheaders) {
+    header_up X-Forwarded-Ssl on
+    header_up X-Real-IP {remote}
+    header_up X-Forwarded-Port {server_port}
+    header_up X-Forwarded-Proto {scheme}
+    header_up X-Url-Scheme {scheme}
+    header_up X-Forwarded-Host {host}
+}
+#+end_src
+
+** Services
+For the most part, the services Caddy is going to be serving are defined in the
+section on each server and then =noweb= will tangle them all into the Caddyfile
+for us.
+
+*** File Server
+I think it would be nice to have a fileserver for anything I want to share or access. I'm not sure I will keep this up but it's here for the time being.
+
+This isn't working right now actually...
+#+name: fileserver-caddy
+#+begin_src bash :tangle no
+files.bitranchlabs.net {
+    file_server browse {
+        root * /static
+        hide .git
+        precompressed zstd br gzip
+        import upheaders
+    }
+    import encoding
+}
+#+end_src
+* Services
+:PROPERTIES:
+:header-args: :tangle ~/org/server/docker-compose.yml :comments no :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+One thing of note here, since we're exposing all the docker containers to
+localhost, we have to keep track of their ports or else there could be a
+collision and something will not be happy.
+
+** Boilerplate
+We'll be using docker-compose for most services.
+#+begin_src yaml
+version: '3.7'
+services:
+#+end_src
+
+** whoami
+This is a pretty worthless service beyond just basic troubleshooting and sanity
+checking. It'll also serve as something of a "template" for creating other
+services I guess.
+*** docker-compose.yaml
+First we need docker-compose file:
+#+begin_src yaml
+  whoami:
+    image: docker.io/containous/whoami:latest
+    restart: always
+    ports:
+      - 8000:80
+#+end_src
+*** Caddyfile
+:PROPERTIES:
+:header-args: :tangle ~/org/server/Caddyfile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+This is the definition of this service in our Caddyfile:
+#+name: whoami-caddy
+#+begin_src bash
+whoami.bitranchlabs.net {
+    reverse_proxy http://127.0.0.1:8000 {
+        import upheaders
+    }
+    import encoding
+}
+#+end_src
+
+** Resume site
+This is my resume website, usually it can be found at [[https://ianpringle.org/]].
+It can also be found at [[https://resume.bitranchlabs.net]]. No real reason for
+both, just something I like to do I guess...
+*** docker-compose.yaml
+Make sure there is no collision on local host and then match that with port 80
+inside the container:
+#+begin_src yaml
+  resume:
+    image: registry.gitlab.com/pard/resume-site:latest
+    restart: always
+    ports:
+      - 8001:80
+#+end_src
+
+*** Caddyfile
+:PROPERTIES:
+:header-args: :tangle ~/org/server/Caddyfile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+This is the definition of this service in our Caddyfile:
+#+name: resume-caddy
+#+begin_src bash
+resume.bitranchlabs.net ianpringle.org {
+    reverse_proxy http://127.0.0.1:8001 {
+        import upheaders
+    }
+    import encoding
+}
+#+end_src
+** Ungovernable World
+*** docker-compose.yaml
+Make sure there is no collision on local host and then match that with port 80
+inside the container:
+#+begin_src yaml
+  ungovernable-world:
+    image: docker.io/pard68/ungovernable
+    restart: always
+    ports:
+      - 8002:80
+#+end_src
+
+*** Caddyfile
+:PROPERTIES:
+:header-args: :tangle ~/org/server/Caddyfile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+This is the config for the actual site, we put the redirect block above it so
+that it can be properly redirected.
+#+name: ungovernable-world-caddy
+#+begin_src bash
+ungovernable.world {
+    reverse_proxy http://127.0.0.1:8002 {
+        import upheaders
+    }
+    import encoding
+}
+#+end_src
+** Bitranchlabs
+*** Blog
+**** docker-compose.yaml
+Make sure there is no collision on local host and then match that with port 80
+inside the container:
+#+begin_src yaml
+  brl-www:
+    image: registry.gitlab.com/bitranchlabs/www:latest
+    restart: always
+    ports:
+      - 8003:80
+#+end_src
+
+**** Caddyfile
+:PROPERTIES:
+:header-args: :tangle ~/org/server/Caddyfile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+
+This is for redirecting some URLs to the desired site.
+#+name: brl-www-redir
+#+begin_src bash
+bitranchlabs.com, bitranchlabs.net, www.bitranchlabs.net, bitranchlabs.org, www.bitranchlabs.org {
+    redir https://bitranchlabs.com{uri}
+}
+#+end_src
+
+This is the config for the actual site, we put the redirect block above it so
+that it can be properly redirected.
+#+name: brl-www-caddy
+#+begin_src bash
+www.bitranchlabs.com {
+    reverse_proxy http://127.0.0.1:8003 {
+        import upheaders
+    }
+    import encoding
+}
+#+end_src
+*** API
+I use the =bitranchlabs.com= domain for some APIs. Because I route by path for these, the setup can be a bit complex (it isn't currently, but if I add API that'll change). In Caddy we will need to use a directive called =handle= to manage directing ports by path. These directives need to all be in the same block, so we'll use some noweb for that.
+
+#+name: brl-api-caddy
+#+begin_src shell :tangle ~/org/server/Caddyfile :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+api.bitranchlabs.com {
+    <<brl-your-face-api>>
+    import encoding
+}
+#+end_src
+**** Your Face API
+***** docker-compose.yaml
+Make sure there is no collision on local host and then match that with port 80
+inside the container:
+#+begin_src yaml
+  brl-your-face-api:
+    image: registry.gitlab.com/pard/yourface-api:master-1
+    restart: always
+    ports:
+      - 8004:80
+#+end_src
+
+***** Caddyfile
+
+This maps that path specified to the port. We are using Caddy's =handle_path= directive here because we want to strip that path being requested since the upstream microserve isn't aware of paths and thinks it's being served from =/=
+#+name: brl-your-face-api
+#+begin_src bash :tangle no :noweb tangle
+    handle_path /api/v1/yourface {
+        reverse_proxy http://127.0.0.1:8004 {
+            import upheaders
+        }
+    }
+#+end_src
+* Firewall
+:PROPERTIES:
+:header-args: :tangle ~/org/server/ferm.conf :comments link :mkdirp yes :padline no :noweb tangle :cache yes
+:END:
+ferm's configuration is pretty straightforward, you tables and chains, you can
+specific a domain (ip, ipv6) for the table, and you can target specific
+predefined policies (ACCEPT, DROP, etc.). I am not a networking guy or a
+firewall guru, but I think I have enough understanding to write something...
+#+begin_src shell
+<<anti-ddos-func>>
+#+end_src
+
+** The filter Table
+We'll write to the default table =filter=:
+#+begin_src shell
+table filter {
+    #+end_src
+
+And we'll start with the =INPUT= chain:
+    #+begin_src shell
+    chain INPUT {
+        #+end_src
+
+Seems like you start with a your catch-all, in this case I want to =DROP= anything
+that isn't explicitly allowed, hopefully this will prevent some attacks just by
+not advertising this server exists.
+        #+begin_src shell
+        policy DROP;
+        #+end_src
+I am still not entirely sure what "connection tracking" is or means, but this
+rules controls this and here is a [[https://web.mit.edu/rhel-doc/4/RH-DOCS/rhel-sg-en-4/s1-firewall-state.html][brief synopsis]] of the idea.
+        #+begin_src shell
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+#+end_src
+
+This is rather self-explanatory, we allow local connections through the
+firewall, it probably is safe to say this won't hurt, if an attacker is coming
+from local we got bigger fish to fry...
+#+begin_src
+        interface lo ACCEPT;
+#+end_src
+
+Contrary to the default settings, I do /not/ want to respond to ICMP:
+#+begin_src
+        proto icmp icmp-type echo-request DROP;
+#+end_src
+
+Now for the things that this server needs to have open. The use of =dport= refers
+to the intended destination of the request.
+#+begin_src :tangle no
+        proto tcp dport (http https) ACCEPT;
+#+end_src
+
+We also want to accept SSH connections. I might change this in the future to be
+over a port other than the default, but for now 22 is good enough!
+#+begin_src shell :tangle no
+        proto tcp dport ssh ACCEPT;
+#+end_src
+
+Everything else is dropped. We also want to allow all outgoing connections,
+though I might look into changing this eventually and would like to log all
+outgoing connections at the very least. And since we're a web server and are not
+in the business of routing for other machines, we will drop all =FOWARD= requests.
+#+begin_src shell
+<<anti-ddos-func-call>>
+    }
+    chain OUTPUT policy ACCEPT;
+    chain FORWARD policy DROP;
+}
+#+end_src
+
+** Anti-DDoS logic
+To mitigate DDoS attacks, we can define a function to track requests over time
+for a specfic IP address and if it exceeds a given threshold, we block that
+address for some length of time. This comes right from the examples document,
+except I removed the IP address exceptions logic because I don't have a static
+address and the address I do get is sometimes shared with other Starlink
+customers.
+#+name: anti-ddos-func
+#+begin_src shell :tangle no :noweb tangle
+@def &ANTIDDOS($ports, $seconds, $hits, $time) = {
+        proto tcp dport $ports @subchain "ddos_check" {
+                mod conntrack ctstate (ESTABLISHED RELATED) ACCEPT;
+                mod recent name "ddos_check" rcheck seconds $seconds hitcount $hits @subchain "ddos" {
+                        mod recent set name "ddos" NOP;
+                        DROP;
+                }
+                mod recent set name "ddos_check" NOP;
+                mod recent name "ddos" rcheck seconds $time DROP;
+                mod recent name "ddos" remove NOP;
+                mod conntrack ctstate NEW ACCEPT;
+                DROP;
+        }
+}
+#+end_src
+
+To use this we want to do two things, first we need to define this /before/ our
+filter table declaration and in that table we want to replace the line(s) that
+declare ports we accept with the following which says "check requests to ports
+22, 88, and 443 to see if the requester has made more than 50 requests in the
+last three seconds, and if so, drop their request and ban them for 86400
+seconds." The docs say to do =(22, 80, 443)= however if you try to do that =ferm=
+will give a warning and rejects the configuration file. According to the error,
+arrays should not be comma separated but should just have spaces. I have opened
+an [[https://github.com/MaxKellermann/ferm/issues/93][issue]] for this and hopefully it'll be resolved before anyone else gets
+confused.
+
+#+name: anti-ddos-func-call
+#+begin_src shell :tangle no
+        &ANTIDDOS((22 80 443), 50, 3, 86400);
+#+end_src
+
+** IPv6
+My ipv6 filter table is also right from the docs, except I am dropping ICMP and
+I'm routing traffic through the anti-DDoS logic.
+#+begin_src shell
+domain ip6 table filter {
+    chain INPUT {
+        policy DROP;
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        interface lo ACCEPT;
+        proto ipv6-icmp DROP;
+
+        &ANTIDDOS((22 80 443), 50, 3, 86400);
+    }
+    chain OUTPUT policy ACCEPT;
+    chain FORWARD policy DROP;
+}
+#+end_src
+
+* Utilities
+** (org-tangle-into-dir)
+This is a helper function to make tangling a little simpler. This is also in my
+emacs config, but it's here because if this file is to be run on by someone else
+or with a minimal config, this function would be required still. I got this from
+[[https://emacs.stackexchange.com/questions/46479/how-to-set-a-tangled-parent-directory-for-each-subtree-in-org-mode][here]].
+#+begin_src emacs-lisp :tangle no :results value
+(defun org-tangle-into-dir (sub-path)
+  "Expand the SUB-PATH into the directory given by the tangle-dir
+   property if that property exists, else use the
+   `default-directory'."
+  (expand-file-name sub-path
+                    (or
+                     (org-entry-get (point) "tangle-dir" 'inherit)
+                     (default-directory))))
+#+end_src
