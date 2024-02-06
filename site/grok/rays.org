@@ -1,2 +1,0 @@
-#+TITLE: Rays Arthimetic
-#+date: <2023-04-17 Mon>
