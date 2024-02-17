@@ -1,0 +1,35 @@
+configure bog with a plist, something like
+#+begin_src lisp
+  (:url "foo.tld"
+   :site-title "Foo Site"
+   :pages ((:type root
+            :template #'(lambda () (foo-make-root-page)))
+           (:type index
+            :path "blog"
+            :template #'generate-index
+            :child-template #'blog-post-template)))
+#+end_src
+
+provide options to statically compile or pre-compile html pages and then serve
+dynamically. this could look like the config being passed to either a
+`bog:generate` to get a static build of the HTML or `bog:serve` to get
+dynamically served content. This would mean either some sites could not be
+statically generated because they require something dynamic or it would mean
+that sites that use dynamic content must provide some value for when the site is
+generated statically. I think I prefer the later option, based on trying to
+generate nextjs sites statically, it's a lot more of a headache the otherway around.
+
+use emacs/orgmode to generate the html file stubs. the ox-tufte project has an
+option to only generate the content inside of the =body= tags which would be very
+useful for getting "stubs" to then insert into the pages. I'd like to
+investigate a way of using some tooling such as =plumb= and =plumb-sexp= to convert
+the html into sexp and then be able to manipulate them to some extent prior to
+converting them back into html for the final output. This would allow, for
+example the ability to replace any heading levels with spinneret's =:h*= keyword
+to properly count the headings out.
+
+lQuery and or clss might also be of use in manipulating the dom and/or
+extracting data from it. This would need to be coupled with metadata embedded
+into the html stubs, such as microformats, or possibly just extracting content
+from the stub in some other way, such as grabbing the =h1= inner html to find the
+page's title. 

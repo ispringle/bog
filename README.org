@@ -1,6 +1,6 @@
 * Bog
 
-** The Static Site Generator of Despond
+** The Web Server of Despond
 
 #+begin_quote
 "This miry slough is such a place as cannot be mended; it is the hollow
