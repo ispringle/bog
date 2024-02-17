@@ -1,3 +1,13 @@
+;;;;
+;;;; Now may the God of peace, who brought again from the dead the great
+;;;; shepherd of the sheep with the blood of an eternal covenant, our Lord
+;;;; Jesus, make you complete in every good work to do his will, working in you
+;;;; that which is well pleasing in his sight, through Jesus Christ, to whom be
+;;;; the glory forever and ever. Amen.
+;;;;
+;;;; -- Hebrews 13:20,21
+;;;;
+
 (defpackage #:bog
   (:use :cl))
 
@@ -52,7 +62,7 @@ Example:
   "Set root template, with specific `title` and template `body` inside root
 document template."
   `(spinneret:with-html-string
-     (:doctype)
+       (:doctype)
      (:html
       (:head
        (:meta :charset "utf-8")
