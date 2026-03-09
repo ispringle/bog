@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Standalone — served as-is</title>
+  <style>
+    body { font-family: sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; background: #111; color: #eee; }
+    h1 { color: tomato; }
+    code { background: #333; padding: 0.1em 0.3em; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <h1>Standalone HTML Document</h1>
+  <p>This is a <strong>full HTML document</strong> (has <code>&lt;!DOCTYPE html&gt;</code>).
+  Bog detects this via <code>html-fragment-p</code> and serves it <em>as-is</em> — no layout
+  wrapping, no head hoisting, no postprocessing.</p>
+
+  <h2>What to verify</h2>
+  <ul>
+    <li>This page has its own dark background — the bog layout is <em>not</em> applied</li>
+    <li>The title is "Standalone — served as-is"</li>
+    <li>There is no bog header or footer</li>
+    <li>The h1 is red (tomato) from the inline styles</li>
+  </ul>
+
+  <p><a href="/" style="color: tomato">← Home</a></p>
+</body>
+</html>

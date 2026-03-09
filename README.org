@@ -53,7 +53,7 @@ Bog, or modify Bog, but Bog is /my/ tool and it will never be extended (by me) t
 cater to others, whether that "other" is a real or figurative person.
 
 ** Todo [0/9]
-- [ ] Support org syntax
+- [ ] Support markdown syntax
 - [ ] Tufte-CSS Syntax HTML [0/10]
   - [ ] Epigraphs with optional footers
   - [ ] Citations

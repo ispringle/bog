@@ -1,0 +1,32 @@
+<head>
+  <title>Colophon</title>
+  <meta name="description" content="How this site is built">
+  <style>
+    .tech-list { border-left: 3px solid #888; padding-left: 1rem; }
+  </style>
+</head>
+
+<h1>Colophon</h1>
+
+<p>This is an <strong>HTML fragment</strong> page. It has a <code>&lt;head&gt;</code> block
+whose contents are hoisted into the layout's <code>&lt;head&gt;</code>.</p>
+
+<h2>What to verify</h2>
+<ul>
+  <li>Title is "Colophon" (from <code>&lt;title&gt;</code> in the fragment's head)</li>
+  <li>The <code>&lt;meta name="description"&gt;</code> is present in page source</li>
+  <li>The inline <code>&lt;style&gt;</code> block was hoisted — the tech list below should have a left border</li>
+  <li>The <code>&lt;head&gt;</code> tag itself does <em>not</em> appear in <code>&lt;body&gt;</code></li>
+  <li>Heading normalization applies — this h1 should render as h2</li>
+</ul>
+
+<h2>Tech stack</h2>
+<ul class="tech-list">
+  <li>Common Lisp (SBCL)</li>
+  <li>Clack + Woo</li>
+  <li>Spinneret</li>
+  <li>3bmd</li>
+  <li>Plump + CLSS</li>
+</ul>
+
+<p><a href="/">← Home</a></p>
