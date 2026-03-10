@@ -16,6 +16,12 @@
    #:*site-name*
    #:*port*
    #:*dev*
+   ;; handlers
+   #:defhandler
+   #:handler-p
+   #:respond-json
+   #:respond-plain
+   #:read-request-body
    ;; page definition
    #:defpage
    #:deftemplate

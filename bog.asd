@@ -20,6 +20,7 @@
                 :components
                 ((:file "package")
                  (:file "content")
+                 (:file "handler")
                  (:file "tufte")
                  (:file "bog")))
                (:file "config")))
