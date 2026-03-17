@@ -116,14 +116,15 @@ Tries lisp/md/html extensions, then index variants."
 (defvar *page-templates* (make-hash-table :test #'equal)
   "Registry of template names for lisp pages.")
 
-(defmacro defpage ((&key mutable
-                      (template *default-template*))
+(defmacro defpage ((&key mutable template)
                    &body body)
   "Define a page function in the current file context.
 Pages are static by default. Declare (:mutable t) for dynamic
 pages. TEMPLATE names the +template file to use."
   (let ((fn-name (intern
-                  (string-upcase (pathname-name *load-pathname*))
+                  (format nil "PAGE/~a"
+                          (string-upcase
+                           (pathname-name *load-pathname*)))
                   "BOG-PAGES")))
     `(progn
        ,(when mutable
@@ -140,8 +141,7 @@ pages. TEMPLATE names the +template file to use."
   (gethash (namestring file) *mutable-pages*))
 
 (defun page-template-name (file)
-  (gethash (namestring file) *page-templates*
-           *default-template*))
+  (gethash (namestring file) *page-templates*))
 
 ;;; ================================================================
 ;;; Template system
@@ -494,30 +494,38 @@ template wrapping and postprocessing."
                      (dom-serialize page-dom))))))))))
 
 (defun render-lisp-page (file)
-  "Lisp pages call their defpage fn -> (values content meta).
-Template-wrapped and postprocessed."
   (flet ((call-page ()
            (load file)
            (multiple-value-bind (content meta)
                (funcall (page-fn file))
-             (let* ((tmpl (find-template
-                           file (page-template-name file)))
-                    (page (call-template
-                           tmpl content meta))
-                    (page-dom (plump:parse page))
-                    (page-dom (run-postprocess
-                               page-dom meta)))
-               (dom-serialize page-dom)))))
+             (let* ((tmpl-name (page-template-name file))
+                    (raw (if tmpl-name
+                             (let* ((tmpl (find-template
+                                           file tmpl-name))
+                                    (page (call-template
+                                           tmpl content meta))
+                                    (page-dom (plump:parse page))
+                                    (page-dom (run-postprocess
+                                               page-dom meta)))
+                               (dom-serialize page-dom))
+                             content)))
+               raw))))
     (if (and *dev* (mutable-page-p file))
         (call-page)
         (or (cache-get file)
             (cache-set file (call-page))))))
 
 (defun page-fn (file)
-  "Derive the page function from the file's pathname-name."
+  "Derive the page/handler function from the file's name.
+Both defpage and defhandler intern into BOG-PAGES with a
+prefix (PAGE/ or HANDLER/) to avoid collisions with CL
+symbols. See handler.lisp header comment for details."
   (let ((name (string-upcase (pathname-name file))))
-    (or (find-symbol name "BOG-PAGES")
-        (error "No function ~a found after loading ~a"
+    (or (find-symbol (format nil "HANDLER/~a" name)
+                     "BOG-PAGES")
+        (find-symbol (format nil "PAGE/~a" name)
+                     "BOG-PAGES")
+        (error "No page or handler ~a after loading ~a"
                name file))))
 
 (defun render-file (file)

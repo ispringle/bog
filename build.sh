@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
+# This compiles a standalone binary server
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUTPUT="${1:-dist}"
+OUTPUT="${1:-bog-site}"
+PORT="${2:-8080}"
 
-sbcl --noinform \
-     --eval "(require :asdf)" \
-     --eval "(asdf:load-system :bog)" \
-     --eval "(bog:generate :output #p\"${OUTPUT}/\")" \
-     --eval "(uiop:quit 0)"
+echo "Building bog -> ${OUTPUT}"
+
+sbcl --non-interactive \
+     --eval '(require :asdf)' \
+     --eval '(handler-bind ((warning #'\''muffle-warning))
+               (asdf:load-system :bog))' \
+     --eval "(bog:build :output #p\"${OUTPUT}\" :port ${PORT})"
+
+echo "Done. Run with:"
+echo "  ./${OUTPUT}"
+echo "  BOG_PORT=3000 ./${OUTPUT}"

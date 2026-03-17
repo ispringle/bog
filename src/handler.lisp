@@ -26,6 +26,22 @@
 ;;;
 ;;; The file resolves via normal find-page routing, so
 ;;; site/api/submit.lisp handles /api/submit for any method.
+;;;
+;;; --- Symbol interning ---
+;;;
+;;; Both defpage and defhandler intern a function into the
+;;; BOG-PAGES package derived from the file's pathname-name.
+;;; To avoid collisions with symbols inherited from CL (e.g.
+;;; a file named quote.lisp would shadow CL:QUOTE), names are
+;;; prefixed: PAGE/ for defpage, HANDLER/ for defhandler.
+;;;
+;;;   site/about.lisp       -> BOG-PAGES::PAGE/ABOUT
+;;;   site/api/quote.lisp   -> BOG-PAGES::HANDLER/QUOTE
+;;;   site/blog/index.lisp  -> BOG-PAGES::PAGE/INDEX
+;;;
+;;; page-fn resolves a file to its function by checking
+;;; HANDLER/ first, then PAGE/. ensure-loaded checks both
+;;; prefixes to decide whether a file needs loading.
 
 ;;; ================================================================
 ;;; Registry
@@ -51,8 +67,9 @@ Unlike defpage, handlers are never template-wrapped, cached,
 or postprocessed. They receive the full Clack env and can
 handle any HTTP method."
   (let ((fn-name (intern
-                  (string-upcase
-                   (pathname-name *load-pathname*))
+                  (format nil "HANDLER/~a"
+                          (string-upcase
+                           (pathname-name *load-pathname*)))
                   "BOG-PAGES")))
     `(progn
        (setf (gethash ,(namestring *load-pathname*)
@@ -66,11 +83,14 @@ handle any HTTP method."
 ;;; ================================================================
 
 (defun ensure-loaded (file)
-  "Load FILE if its page-fn isn't yet defined.
+  "Load FILE if its page/handler fn isn't yet defined.
 Ensures defhandler/defpage registration happens before the
 router checks handler-p."
   (let ((name (string-upcase (pathname-name file))))
-    (unless (find-symbol name "BOG-PAGES")
+    (unless (or (find-symbol (format nil "PAGE/~a" name)
+                             "BOG-PAGES")
+                (find-symbol (format nil "HANDLER/~a" name)
+                             "BOG-PAGES"))
       (load file))))
 
 (defun render-handler (file env)

@@ -7,7 +7,8 @@
 ;;; Basic site settings
 (setf *site-name* "Bog")
 (setf *port*      8080)
-(setf *pages-dir* #p"site/")
+(setf *pages-dir*
+      (asdf:system-relative-pathname :bog "site/"))
 
 (setf 3bmd-code-blocks:*renderer* :chroma)
 (setf 3bmd-code-blocks:*chroma-style* "algol")

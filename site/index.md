@@ -15,6 +15,7 @@ A test suite for visually verifying bog's rendering pipeline. Each page tests a 
 - [/prose](/prose) - `.md` rich: all markdown elements, canonical URL
 - [/blog](/blog) - `.lisp` mutable index: auto-lists posts
 - [/missing](/missing) - 404 handler
+- [/quotes](/quotes) - `.lisp` page + `defhandler`: htmx fetches from `/api/quote`
 - [/source](/source) - The bog source files.
 
 ## Front Matter

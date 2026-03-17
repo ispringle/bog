@@ -1,6 +1,6 @@
 (in-package #:bog-pages)
 
-(bog:defpage (:mutable bog:*dev*)
+(bog:defpage (:mutable bog:*dev* :template "+template")
   (values
    (spinneret:with-html-string
      (:h1 "Mutable Page")

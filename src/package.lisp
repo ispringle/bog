@@ -19,6 +19,7 @@
    ;; handlers
    #:defhandler
    #:handler-p
+   #:respond
    #:respond-json
    #:respond-plain
    #:read-request-body
@@ -33,6 +34,7 @@
    #:cache-clear
    ;; entry points
    #:*server*
+   #:*log*
    #:serve
    #:stop
    #:generate
@@ -42,9 +44,9 @@
 (defpackage #:bog-pages
   (:use #:cl #:bog))
 
-(defpackage #:bog.tufte
-  (:use #:cl)
-  (:export
-   #:citations
-   #:marginnotes
-   #:epigraphs))
+;; (defpackage #:bog.tufte
+;;   (:use #:cl)
+;;   (:export
+;;    #:citations
+;;    #:marginnotes
+;;    #:epigraphs))

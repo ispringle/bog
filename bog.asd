@@ -1,7 +1,7 @@
 (asdf:defsystem #:bog
   :description "A personal website framework"
   :author "Ian"
-  :license "MIT"
+  :license "0BSD"
   :version "0.1.0"
   :depends-on (#:clack
                #:woo
@@ -21,6 +21,6 @@
                 ((:file "package")
                  (:file "content")
                  (:file "handler")
-                 (:file "tufte")
+                 ;; (:file "tufte")
                  (:file "bog")))
                (:file "config")))

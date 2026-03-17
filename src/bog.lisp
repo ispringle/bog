@@ -64,21 +64,9 @@
   (member extension *text-extensions* :test #'equal))
 
 (defun serve-asset (file)
-  "Serve a static asset with appropriate content type."
   (let* ((type (pathname-type file))
-         (ct (mime-type type))
-         (body (if (text-asset-p type)
-                   (read-file file)
-                   (with-open-file (in file
-                                       :element-type
-                                       '(unsigned-byte 8))
-                     (let ((buf (make-array
-                                 (file-length in)
-                                 :element-type
-                                 '(unsigned-byte 8))))
-                       (read-sequence buf in)
-                       buf)))))
-    (list 200 (list :content-type ct) (list body))))
+         (ct (mime-type type)))
+    (list 200 (list :content-type ct) file)))
 
 (defun safe-path-p (file)
   "Returns T if FILE resolves to a path under *pages-dir*.
@@ -145,24 +133,56 @@ Guards against directory traversal attacks."
       (t (respond (render-404) :status 404)))))
 
 ;;; ================================================================
+;;; Request logging
+;;; ================================================================
+
+(defvar *log* nil
+  "When T, log requests to stdout.")
+
+(defun format-timestamp ()
+  "Return HH:MM:SS timestamp string."
+  (multiple-value-bind (s m h)
+      (decode-universal-time (get-universal-time))
+    (format nil "~2,'0d:~2,'0d:~2,'0d" h m s)))
+
+(defun logging-app (env)
+  "Wrapper around app that logs requests when *log* is T."
+  (let* ((start (get-internal-real-time))
+         (response (app env))
+         (elapsed (float
+                   (/ (- (get-internal-real-time) start)
+                      internal-time-units-per-second)))
+         (status (first response))
+         (method (getf env :request-method))
+         (path (getf env :path-info)))
+    (when *log*
+      (format t "~&~a ~3d ~a ~a ~,3fs~%"
+              (format-timestamp)
+              status method path elapsed)
+      (finish-output))
+    response))
+
+;;; ================================================================
 ;;; Entry points
 ;;; ================================================================
 
 (defvar *server* nil
   "Handle to the running Clack server.")
 
-(defun serve (&key (port *port*) (dev t))
+(defun serve (&key (port *port*) (dev t) log)
   "Start the bog server.
 DEV T: mutable pages bypass cache.
-DEV NIL: all pages cached, cache warmed at startup."
+DEV NIL: all pages cached, cache warmed at startup.
+LOG T: print request log lines to stdout."
   (when *server*
     (warn "bog: server already running; call (bog:stop) first")
     (return-from serve *server*))
-  (setf *dev* dev)
+  (setf *dev* dev
+        *log* log)
   (cache-clear)
   (unless dev (warm-cache *pages-dir*))
   (setf *server*
-        (clack:clackup #'app
+        (clack:clackup #'logging-app
                        :server :woo
                        :port port
                        :use-default-middlewares dev)))
@@ -275,7 +295,17 @@ is unaffected."
                  (serve :port (if env-port
                                   (parse-integer env-port)
                                   port)
-                        :dev nil)))
+                        :dev nil
+                        :log t))
+               (format t "~&; bog: listening on port ~a~%"
+                       *port*)
+               (finish-output)
+               (handler-case
+                   (loop (sleep 3600))
+                 (sb-sys:interactive-interrupt ()
+                   (stop)
+                   (format t "~&; bog: stopped~%")
+                   (sb-ext:exit))))
    :executable t
    :compression t)
   #-sbcl

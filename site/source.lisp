@@ -1,6 +1,6 @@
 (in-package #:bog-pages)
 
-(bog:defpage ()
+(bog:defpage (:template "+template")
   (let ((files '("bog.asd" "config.lisp"
                  "src/package.lisp" "src/content.lisp"
                  "src/tufte.lisp" "src/bog.lisp")))

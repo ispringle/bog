@@ -1,6 +1,6 @@
 (in-package #:bog-pages)
 
-(bog:defpage ()
+(bog:defpage (:template "+template")
   (values
    (spinneret:with-html-string
      (:h1 "About")
